@@ -1,5 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+/* 2019-2022 FTC Robotics Freight-Frenzy
+ * (c) 2019-2022 La Salle Robotics
+ * Developed for the Freight Frenzy competition
+ * Written By Lukas Werner ('22)
+ */
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;

@@ -17,9 +17,17 @@ public class MecanumDrive {
     private  double oldSpeed = 1;
 
     private static final double FRICTION_COEF = 1.75;
+
+    //front left
     private double flP = 0;
+
+    //back left
     private double blP = 0;
+
+    //front right
     private double frP = 0;
+
+    //back right
     private double brP = 0;
 
     private final DcMotor leftFront;

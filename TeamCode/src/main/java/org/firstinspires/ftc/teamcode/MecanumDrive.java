@@ -134,10 +134,10 @@ public class MecanumDrive {
     }
 
     public MecanumDrive applyPower() {
-        leftFront.setPower(-flP * speed);
-        rightFront.setPower(-frP * speed);
-        leftBack.setPower(-blP * speed);
-        rightBack.setPower(-brP * speed);
+        leftFront.setPower(flP * speed);
+        rightFront.setPower(frP * speed);
+        leftBack.setPower(blP * speed);
+        rightBack.setPower(brP * speed);
         return this;
     }
 

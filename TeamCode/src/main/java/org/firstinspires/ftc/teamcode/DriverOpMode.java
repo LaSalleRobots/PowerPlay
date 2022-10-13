@@ -20,7 +20,11 @@ public class DriverOpMode extends LinearOpMode {
 
         while (opModeIsActive()) {
             robot.handleGamepads(gamepad1, gamepad2);
-
+            if (gamepad1.dpad_up) {
+                robot.lift.up();
+            } else if (gamepad1.dpad_down) {
+                robot.lift.down();
+            }
         }
     }
 }

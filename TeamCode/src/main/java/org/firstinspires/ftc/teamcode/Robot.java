@@ -20,6 +20,7 @@ public class Robot {
     private final ElapsedTime runtime;
 
     public MecanumDrive drive;
+    public Lift lift;
 
 	public BNO055IMU imu = null;
 
@@ -30,6 +31,7 @@ public class Robot {
 
         // Setup Devices
         this.drive = new MecanumDrive(hardwareMap, runtime);
+        this.lift = new Lift(hardwareMap);
 
 
 		// Setup Gyro Sensors

@@ -15,7 +15,7 @@ public class DriverOpMode extends LinearOpMode {
         ElapsedTime time = new ElapsedTime();
 
         Robot robot = new Robot(hardwareMap, time);
-
+        
         waitForStart();
 
         while (opModeIsActive()) {
@@ -25,6 +25,14 @@ public class DriverOpMode extends LinearOpMode {
             } else if (gamepad1.dpad_down) {
                 robot.lift.down();
             }
+            if (gamepad1.cross) {
+                robot.lift.setPositionAsync(robot.lift.LARGE);
+            }
+
+            telemetry.addData("Lift", robot.lift.getPosition());
+            telemetry.addData("lift target", robot.lift.getTarget());
+            telemetry.addData("Heading", robot.getHeading());
+            telemetry.update();
         }
     }
 }

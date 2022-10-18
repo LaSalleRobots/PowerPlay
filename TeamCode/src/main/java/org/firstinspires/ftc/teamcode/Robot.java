@@ -21,6 +21,7 @@ public class Robot {
 
     public MecanumDrive drive;
     public Lift lift;
+    public Grabber grabber;
 
 	public BNO055IMU imu = null;
 
@@ -32,6 +33,7 @@ public class Robot {
         // Setup Devices
         this.drive = new MecanumDrive(hardwareMap, runtime);
         this.lift = new Lift(hardwareMap);
+        this.grabber = new Grabber(hardwareMap);
 
 
 		// Setup Gyro Sensors
@@ -49,7 +51,7 @@ public class Robot {
 
     // handleGamepads the second gamepad is currently ignored for this input code
     public Robot handleGamepads(Gamepad gamepad1, Gamepad gamepad2) {
-        drive.calculateDirections(gamepad1.left_stick_x * 0.75, gamepad1.left_stick_y * 0.75, -0.5*gamepad1.right_stick_x);
+        drive.calculateDirections(gamepad1.left_stick_x, gamepad1.left_stick_y, -0.7 *gamepad1.right_stick_x);
         drive.applyPower();
         return this;
     }
@@ -65,5 +67,9 @@ public class Robot {
         while (time <= initTime + sleepTime) {
             time = runtime.time();
         }
+    }
+
+    public double getHeading() {
+        return imu.getAngularOrientation().secondAngle;
     }
 }

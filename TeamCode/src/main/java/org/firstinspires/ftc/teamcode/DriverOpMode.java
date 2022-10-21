@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "DriverControlled")
@@ -17,7 +18,7 @@ public class DriverOpMode extends LinearOpMode {
         Robot robot = new Robot(hardwareMap, time);
         
         waitForStart();
-
+        gamepad1.rumble(1, 1, 500);
         while (opModeIsActive()) {
             robot.handleGamepads(gamepad1, gamepad2);
             if (gamepad1.dpad_up) {

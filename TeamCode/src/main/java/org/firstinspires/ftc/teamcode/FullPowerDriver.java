@@ -10,12 +10,19 @@ public class FullPowerDriver extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         ElapsedTime time = new ElapsedTime();
         Robot robot = new Robot(hardwareMap, time);
-
+        double x;
+        double y;
+        double r;
 
         waitForStart();
 
         while (opModeIsActive()) {
-            robot.drive.calculateDirections(gamepad1.left_stick_x, gamepad1.left_stick_y, -gamepad1.right_stick_x);
+            //prematurely combines joystick values, this is purely organizational
+            x = ((0.75 * gamepad1.left_stick_x) + (0.25 * gamepad2.left_stick_x));
+            y = ((0.75 * gamepad1.left_stick_y) + (0.25 * gamepad2.left_stick_y));
+            r = ((0.25 * gamepad1.right_stick_x) + (0.05 * gamepad2.right_stick_x));
+            //applies values. Notice the negative R.
+            robot.drive.calculateDirections(x, y, -r);
             robot.drive.applyPower();
         }
     }

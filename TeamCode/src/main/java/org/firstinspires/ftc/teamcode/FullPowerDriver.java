@@ -17,6 +17,7 @@ public class FullPowerDriver extends LinearOpMode {
         double target;
         boolean MakerIndustriesIsTheBest = true;
         boolean debounceX = false;
+        LiftControlMode liftControlMode = LiftControlMode.ManualControl;
 
         waitForStart();
 
@@ -35,24 +36,39 @@ public class FullPowerDriver extends LinearOpMode {
 
             //Lift section
             {
-                //manual sequence: relative lift target calculations. Change this coefficient if too sensitive.
-                target = (robot.lift.getPosition() + (50 * gamepad2.right_stick_y));
-                //requires an integer. Not sure if this part works.
-                robot.lift.setPositionAsync((int) target);
+                if (liftControlMode == LiftControlMode.ManualControl) {
+                    // operation while in Manual Control state
+                    //manual sequence: relative lift target calculations. Change this coefficient if too sensitive.
+                    target = (robot.lift.getPosition() + (50 * gamepad2.right_stick_y));
+                    //requires an integer. Not sure if this part works.
+                    robot.lift.setPositionAsync((int) target);
 
-                //dPad section. Better way to do this? I don't care.
-                {
+
+                    //state machine exit condition
+                    if (gamepad2.dpad_up || gamepad2.dpad_down ||
+                        gamepad2.dpad_right || gamepad2.dpad_left) {
+                        liftControlMode = LiftControlMode.PresetControl;
+                    }
+                }
+
+                if (liftControlMode == LiftControlMode.PresetControl) {
+                    // operation while in Preset Control state
                     if (gamepad2.dpad_up) {
-                        robot.lift.setPosition(robot.lift.LARGE);
+                        robot.lift.setPositionAsync(robot.lift.LARGE);
                     }
                     if (gamepad2.dpad_down) {
-                        robot.lift.setPosition(robot.lift.SMALL);
+                        robot.lift.setPositionAsync(robot.lift.SMALL);
                     }
                     if (gamepad2.dpad_left) {
-                        robot.lift.setPosition(robot.lift.MIDDLE);
+                        robot.lift.setPositionAsync(robot.lift.MIDDLE);
                     }
                     if (gamepad2.dpad_right) {
-                        robot.lift.setPosition(0);
+                        robot.lift.setPositionAsync(0);
+                    }
+
+                    // state exit condition
+                    if (!robot.lift.isActive()) {
+                        liftControlMode = LiftControlMode.ManualControl;
                     }
                 }
             }
@@ -77,6 +93,8 @@ public class FullPowerDriver extends LinearOpMode {
                     }
                 }
             }
+            if (!opModeIsActive()) {break;}
         }
     }
+        private enum LiftControlMode { ManualControl, PresetControl }
 }

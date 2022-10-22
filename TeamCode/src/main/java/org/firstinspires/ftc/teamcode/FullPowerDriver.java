@@ -17,6 +17,8 @@ public class FullPowerDriver extends LinearOpMode {
         double target;
         boolean MakerIndustriesIsTheBest = true;
         boolean debounceX = false;
+        boolean debounceF = false;
+        boolean fieldCentric = false;
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
 
         waitForStart();
@@ -29,9 +31,40 @@ public class FullPowerDriver extends LinearOpMode {
                 x = ((0.75 * gamepad1.left_stick_x) + (0.25 * gamepad2.left_stick_x));
                 y = ((0.75 * gamepad1.left_stick_y) + (0.25 * gamepad2.left_stick_y));
                 r = ((0.25 * gamepad1.right_stick_x) + (0.05 * gamepad2.right_stick_x));
-                //applies drive values. Notice the negative R.
-                robot.drive.calculateDirections(x, y, -r);
+                //I'm not partial to field centric, but I still want it to be an available feature.
+                if (fieldCentric) {
+                    //robot.getHeading() may be partially or not at all functional. Good luck, traveler.
+                    robot.drive.calculateDirectionsFieldCentric(x, y, -r, robot.getHeading());
+                }
+                else {
+                    //applies drive values. Notice the negative R.
+                    robot.drive.calculateDirections(x, y, -r);
+                }
+                //Applies... power or something. I think this works both for field-centric and not.
                 robot.drive.applyPower();
+                //Toggle field centric (stole the whole debouncer from the claw code)
+                {
+                    if (gamepad1.triangle) {
+                        if (debounceF = false) {
+                            debounceF = true;
+                            if (fieldCentric) {
+                                fieldCentric = false;
+
+                            }
+                            else {
+                                fieldCentric = true;
+                            }
+                        }
+
+                    }
+                    {
+                        if (debounceF) {
+                            if (!gamepad1.triangle) {
+                                debounceF = false;
+                            }
+                        }
+                    }
+                }
             }
 
             //Lift section

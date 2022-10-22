@@ -20,6 +20,12 @@ public class FullPowerDriver extends LinearOpMode {
         boolean debounceF = false;
         boolean fieldCentric = false;
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
+        //Quickly tweak sensitivity coefficients here
+        double gpad1MoveSpeed = 0.75;
+        double gpad1RotationSpeed = 0.25;
+        double gpad2MoveSpeed = 0.25;
+        double gpad2RotationSpeed = 0.05;
+        double ManualModeLiftSensitivity = 50;
 
         waitForStart();
 
@@ -28,9 +34,9 @@ public class FullPowerDriver extends LinearOpMode {
             {
                 //Note that both gamepads get control over robot movement, and can complement or counteract each other.
                 // prematurely combines joystick values, this is purely organizational
-                x = ((0.75 * gamepad1.left_stick_x) + (0.25 * gamepad2.left_stick_x));
-                y = ((0.75 * gamepad1.left_stick_y) + (0.25 * gamepad2.left_stick_y));
-                r = ((0.25 * gamepad1.right_stick_x) + (0.05 * gamepad2.right_stick_x));
+                x = ((gpad1MoveSpeed * gamepad1.left_stick_x) + (gpad2MoveSpeed * gamepad2.left_stick_x));
+                y = ((gpad1MoveSpeed * gamepad1.left_stick_y) + (gpad2MoveSpeed * gamepad2.left_stick_y));
+                r = ((gpad1RotationSpeed * gamepad1.right_stick_x) + (gpad2RotationSpeed * gamepad2.right_stick_x));
                 //I'm not partial to field centric, but I still want it to be an available feature.
                 if (fieldCentric) {
                     //robot.getHeading() may be partially or not at all functional. Good luck, traveler.
@@ -71,8 +77,8 @@ public class FullPowerDriver extends LinearOpMode {
             {
                 if (liftControlMode == LiftControlMode.ManualControl) {
                     // operation while in Manual Control state
-                    //manual sequence: relative lift target calculations. Change this coefficient if too sensitive.
-                    target = (robot.lift.getPosition() + (50 * gamepad2.right_stick_y));
+                    //manual sequence: relative lift target calculations.
+                    target = (robot.lift.getPosition() + (ManualModeLiftSensitivity * gamepad2.right_stick_y));
                     //requires an integer. Not sure if this part works.
                     robot.lift.setPositionAsync((int) target);
 
@@ -112,7 +118,9 @@ public class FullPowerDriver extends LinearOpMode {
                     //I don't know how to use the "Debouncer" file in the directory, and I remember from last year that it was a little jank. Making my own.
                     if (debounceX = false) {
                         debounceX = true;
-                        //Do claw stuff here
+                        //claw stuff here
+                        robot.grabber.toggle();
+                        }
                     }
 
                 }
@@ -125,9 +133,10 @@ public class FullPowerDriver extends LinearOpMode {
                         }
                     }
                 }
-            }
             if (!opModeIsActive()) {break;}
+            }
+
         }
+    private enum LiftControlMode { ManualControl, PresetControl }
     }
-        private enum LiftControlMode { ManualControl, PresetControl }
-}
+

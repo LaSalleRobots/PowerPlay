@@ -15,6 +15,14 @@ public class ReadLiftEncoder extends LinearOpMode {
         while (opModeIsActive() ) {
             telemetry.addData("Lift Position", lift.getPosition());
             telemetry.update();
+
+
+            if (gamepad1.dpad_up) {
+                lift.up();
+            }
+            if (gamepad1.dpad_down) {
+                lift.down();
+            }
         }
     }
 }

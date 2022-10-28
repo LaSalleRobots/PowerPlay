@@ -3,22 +3,22 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class Debouncer {
-    private ElapsedTime time = new ElapsedTime();
-    private double bounceThreshold = 0.1;
+    private int bounceThreshold = 10;
+    private int onSamples = 0;
 
-    public Debouncer(double threshold) {
+    public Debouncer(int threshold) {
         bounceThreshold = threshold;
-        time = new ElapsedTime();
     }
 
-    public Debouncer() {
-        time = new ElapsedTime();
-    }
+    public Debouncer() {}
 
     public boolean isPressed(boolean value) {
-        if (time.seconds() > bounceThreshold) {
-            time.reset();
-            return value;
+        if (value) {
+            onSamples++;
+        }
+        if (onSamples >= bounceThreshold) {
+            onSamples = 0;
+            return true;
         }
         return false;
     }

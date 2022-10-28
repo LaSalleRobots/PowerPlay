@@ -13,6 +13,9 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 public class Robot {
@@ -40,6 +43,7 @@ public class Robot {
         this.imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
+        parameters.mode = BNO055IMU.SensorMode.GYRONLY;
         //parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         this.imu.initialize(parameters);
     }
@@ -70,6 +74,6 @@ public class Robot {
     }
 
     public double getHeading() {
-        return imu.getAngularOrientation().secondAngle;
+        return imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
     }
 }

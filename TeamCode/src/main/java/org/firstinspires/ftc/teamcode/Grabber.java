@@ -4,8 +4,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Grabber {
-    private Servo left;
-    private Servo right;
+    public Servo left;
+    public
+    Servo right;
 
     Servo thing;
 

@@ -24,6 +24,8 @@ public class Lift {
 
     }
 
+    public boolean isActive() {return liftMotor.isBusy();}
+
     public int getTarget() {
         return liftMotor.getTargetPosition();
     }

@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class MecanumDrive {
 
+    // drive motors have 384.5 points per rotation at the output shaft according to Gobuilda
+
     public double speed = 1;
     private  double oldSpeed = 1;
 

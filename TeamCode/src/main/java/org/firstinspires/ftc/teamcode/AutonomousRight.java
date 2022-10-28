@@ -19,13 +19,24 @@ public class AutonomousRight extends LinearOpMode {
 
         waitForStart();
 
+        robot.drive.startSlowMode(.75);
+
+        //adjust with how long it takes to travel 1 square
+        final double SquareSize = 2;
+        final double sideSquareSize = 2.5;
+
         if (id == 1) {
-            robot.drive.left().goFor(1);
-            robot.drive.forward();
+            robot.drive.left().goFor(2 * sideSquareSize);
+            robot.drive.forward().goFor(SquareSize);
         }
-
-
-
-
+        else if (id == 2) {
+            robot.drive.right().goFor(sideSquareSize);
+            robot.drive.forward().goFor(2 * SquareSize);
+            robot.drive.left().goFor(sideSquareSize);
+        }
+        else {
+            robot.drive.right().goFor(sideSquareSize);
+            robot.drive.forward().goFor(2 * SquareSize);
+        }
     }
 }

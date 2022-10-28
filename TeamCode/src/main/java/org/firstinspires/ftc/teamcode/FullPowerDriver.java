@@ -21,11 +21,12 @@ public class FullPowerDriver extends LinearOpMode {
         boolean fieldCentric = false;
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
         //Quickly tweak sensitivity coefficients here
-        double gpad1MoveSpeed = 0.75;
-        double gpad1RotationSpeed = 0.25;
-        double gpad2MoveSpeed = 0.25;
-        double gpad2RotationSpeed = 0.05;
-        double ManualModeLiftSensitivity = 50;
+        double gpad1MoveSpeed = 0.8;
+        double gpad1RotationSpeed = 0.4;
+        double gpad2MoveSpeed = 0.4;
+        double gpad2RotationSpeed = 0.2;
+        //negative coefficient to account for backwards lift control. Invert as needed.
+        double ManualModeLiftSensitivity = -50;
 
         waitForStart();
 
@@ -77,15 +78,14 @@ public class FullPowerDriver extends LinearOpMode {
             {
                 if (liftControlMode == LiftControlMode.ManualControl) {
                     // operation while in Manual Control state
-                    //manual sequence: relative lift target calculations.
-                    target = (robot.lift.getPosition() + (ManualModeLiftSensitivity * gamepad2.right_stick_y));
-                    //requires an integer. Not sure if this part works.
-                    robot.lift.setPositionAsync((int) target);
-
+                    if (gamepad2.right_stick_y > 0.1 || gamepad2.right_stick_y < 0.1) {
+                        target = (robot.lift.getPosition() + (ManualModeLiftSensitivity * gamepad2.right_stick_y));
+                        robot.lift.setPositionAsync((int) target);
+                    }
 
                     //state machine exit condition
                     if (gamepad2.dpad_up || gamepad2.dpad_down ||
-                        gamepad2.dpad_right || gamepad2.dpad_left) {
+                        gamepad2.dpad_right || gamepad2.dpad_left || gamepad2.left_bumper) {
                         liftControlMode = LiftControlMode.PresetControl;
                     }
                 }
@@ -103,6 +103,9 @@ public class FullPowerDriver extends LinearOpMode {
                     }
                     if (gamepad2.dpad_right) {
                         robot.lift.setPositionAsync(0);
+                    }
+                    if (gamepad2.left_bumper) {
+                        robot.lift.setPositionAsync(100);
                     }
 
                     // state exit condition

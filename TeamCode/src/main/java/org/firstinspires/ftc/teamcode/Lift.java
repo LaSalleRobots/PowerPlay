@@ -33,6 +33,8 @@ public class Lift {
         return liftMotor.getCurrentPosition();
     }
 
+    public void setPower(double p) {liftMotor.setPower(p);}
+
     public Lift setPosition(int ticks) {
         this.setPositionAsync(ticks);
         while (this.liftMotor.isBusy()) {}

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Two-Controller Driver-Controlled")
@@ -15,8 +16,8 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         double r;
         double target;
         boolean MakerIndustriesIsTheBest = true;
-        boolean debounceX = false;
-        boolean debounceF = false;
+        Debouncer dx = new Debouncer();
+        Debouncer df = new Debouncer();
         boolean fieldCentric = false;
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
         //Quickly tweak sensitivity coefficients here
@@ -41,8 +42,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 if (fieldCentric) {
                     //robot.getHeading() may be partially or not at all functional. Good luck, traveler.
                     robot.drive.calculateDirectionsFieldCentric(x, y, -r, robot.getHeading());
-                }
-                else {
+                } else {
                     //applies drive values. Notice the negative R.
                     robot.drive.calculateDirections(x, y, -r);
                 }
@@ -50,42 +50,38 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 robot.drive.applyPower();
                 //Toggle field centric (stole the whole debouncer from the claw code)
                 {
-                    if (gamepad1.triangle || gamepad2.x) {
-                        if (debounceF = false) {
-                            debounceF = true;
-                            if (fieldCentric) {
-                                fieldCentric = false;
-
-                            }
-                            else {
-                                fieldCentric = true;
-                            }
-                        }
-
-                    }
-                    {
-                        if (debounceF) {
-                            if (!gamepad1.triangle || !gamepad2.x) {
-                                debounceF = false;
-                            }
-                        }
+                    if (df.isPressed(gamepad1.triangle || gamepad2.x)) {
+                        fieldCentric = !fieldCentric;
                     }
                 }
             }
 
             //Lift section
             {
+                if (liftControlMode == LiftControlMode.HoldPosition) {
+                    // hold the position of the state machine
+                    robot.lift.setPositionAsync(robot.lift.getTarget());
+
+                    // exit conditions
+                    if (stickMoved(gamepad2)) {
+                        liftControlMode = LiftControlMode.ManualControl;
+                    }
+                    if (dPad(gamepad2) || gamepad2.left_bumper) {
+                        liftControlMode = LiftControlMode.PresetControl;
+                    }
+                }
                 if (liftControlMode == LiftControlMode.ManualControl) {
                     // operation while in Manual Control state
-                    if (gamepad2.right_stick_y > 0.1 || gamepad2.right_stick_y < 0.1) {
-                        target = (robot.lift.getPosition() + (ManualModeLiftSensitivity * gamepad2.right_stick_y));
-                        robot.lift.setPositionAsync((int) target);
-                    }
+                    target = (robot.lift.getPosition() + (ManualModeLiftSensitivity * gamepad2.right_stick_y));
+                    robot.lift.setPositionAsync((int) target);
+
 
                     //state machine exit condition
-                    if (gamepad2.dpad_up || gamepad2.dpad_down ||
-                        gamepad2.dpad_right || gamepad2.dpad_left || gamepad2.left_bumper) {
+                    if (dPad(gamepad2) || gamepad2.left_bumper) {
                         liftControlMode = LiftControlMode.PresetControl;
+                    }
+                    if (gamepad2.right_stick_y == 0) {
+                        liftControlMode = LiftControlMode.HoldPosition;
                     }
                 }
 
@@ -108,38 +104,37 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                     }
 
                     // state exit condition
-                    
-                    if (gamepad2.right_stick_y > 0.25 || gamepad2.right_stick_y < -0.25 || gamepad2.b) {
+
+                    if (stickMoved(gamepad2) || gamepad2.b) {
                         liftControlMode = LiftControlMode.ManualControl;
+                    }
+                    if (!robot.lift.isActive()) {
+                        liftControlMode = LiftControlMode.HoldPosition;
                     }
                 }
             }
 
             //Claw? (needs actual claw stuff)
             {
-                if (gamepad2.cross || gamepad2.a) {
+                if (dx.isPressed(gamepad2.cross || gamepad2.a)) {
                     //I don't know how to use the "Debouncer" file in the directory, and I remember from last year that it was a little jank. Making my own.
-                    if (debounceX = false) {
-                        debounceX = true;
-                        //claw stuff here
-                        robot.grabber.toggle();
-                        }
-                    }
-
+                    robot.grabber.toggle();
                 }
-                //debouncer stuff
-                {
-                    //Reset debouncer boolean when found to be on when button has been released.
-                    if (debounceX) {
-                        if (!gamepad2.cross || !gamepad2.a) {
-                            debounceX = false;
-                        }
-                    }
-                }
-            if (!opModeIsActive()) {break;}
             }
+            if (!opModeIsActive()) {
+                break;
+            }
+        }
 
         }
-    private enum LiftControlMode { ManualControl, PresetControl }
+    private enum LiftControlMode { ManualControl, PresetControl, HoldPosition, Home }
+
+    private boolean dPad(Gamepad g) {
+        return g.dpad_up || g.dpad_down ||
+                g.dpad_right || g.dpad_left;
+    }
+    private boolean stickMoved(Gamepad g) {
+        return g.right_stick_y > 0.1 || g.right_stick_y < -0.1;
+    }
     }
 

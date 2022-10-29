@@ -16,14 +16,15 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         double target;
         boolean MakerIndustriesIsTheBest = true;
         boolean debounceX = false;
+        Debouncer dx = new Debouncer();
         boolean debounceF = false;
         boolean fieldCentric = false;
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
         //Quickly tweak sensitivity coefficients here
-        double gpad1MoveSpeed = 0.8;
-        double gpad1RotationSpeed = 0.4;
-        double gpad2MoveSpeed = 0.4;
-        double gpad2RotationSpeed = 0.2;
+        double gpad1MoveSpeed = 1;
+        double gpad1RotationSpeed = 0.75;
+        double gpad2MoveSpeed = 0.6;
+        double gpad2RotationSpeed = 0.4;
         //negative coefficient to account for backwards lift control. Invert as needed.
         double ManualModeLiftSensitivity = -50;
 
@@ -77,7 +78,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             {
                 if (liftControlMode == LiftControlMode.ManualControl) {
                     // operation while in Manual Control state
-                    if (gamepad2.right_stick_y > 0.1 || gamepad2.right_stick_y < 0.1) {
+                    if (gamepad2.right_stick_y > 0.1 || gamepad2.right_stick_y < -0.1) {
                         target = (robot.lift.getPosition() + (ManualModeLiftSensitivity * gamepad2.right_stick_y));
                         robot.lift.setPositionAsync((int) target);
                     }
@@ -108,7 +109,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                     }
 
                     // state exit condition
-                    
+
                     if (gamepad2.right_stick_y > 0.25 || gamepad2.right_stick_y < -0.25 || gamepad2.b) {
                         liftControlMode = LiftControlMode.ManualControl;
                     }
@@ -117,29 +118,14 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
             //Claw? (needs actual claw stuff)
             {
-                if (gamepad2.cross || gamepad2.a) {
-                    //I don't know how to use the "Debouncer" file in the directory, and I remember from last year that it was a little jank. Making my own.
-                    if (debounceX = false) {
-                        debounceX = true;
-                        //claw stuff here
-                        robot.grabber.toggle();
-                        }
-                    }
+                if (dx.isPressed(gamepad2.cross || gamepad2.a)) {
+                    robot.grabber.toggle();
+                }
+            }
 
-                }
-                //debouncer stuff
-                {
-                    //Reset debouncer boolean when found to be on when button has been released.
-                    if (debounceX) {
-                        if (!gamepad2.cross || !gamepad2.a) {
-                            debounceX = false;
-                        }
-                    }
-                }
             if (!opModeIsActive()) {break;}
             }
 
         }
     private enum LiftControlMode { ManualControl, PresetControl }
     }
-

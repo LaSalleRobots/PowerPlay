@@ -5,10 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Grabber {
     public Servo left;
-    public
-    Servo right;
+    public Servo right;
 
-    Servo thing;
 
     public int maxDegree = 180;
     public int leftClawDegree = 0;
@@ -22,14 +20,14 @@ public class Grabber {
 
     public void open() {
         state = true;
-        left.setPosition(leftClawDegree/maxDegree);
-        right.setPosition(rightClawDegree/maxDegree);
+        left.setPosition(30.0/180);
+        right.setPosition(150.0/180);
     }
 
     public void close() {
         state = false;
-        left.setPosition(1);
-        right.setPosition(0);
+        left.setPosition(0);
+        right.setPosition(1);
     }
 
     public void toggle() {

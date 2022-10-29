@@ -95,17 +95,17 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                     if (gamepad2.dpad_up) {
                         robot.lift.setPositionAsync(robot.lift.LARGE);
                     }
-                    if (gamepad2.dpad_down) {
+                    if (gamepad2.dpad_right) {
                         robot.lift.setPositionAsync(robot.lift.SMALL);
                     }
                     if (gamepad2.dpad_left) {
                         robot.lift.setPositionAsync(robot.lift.MIDDLE);
                     }
-                    if (gamepad2.dpad_right) {
+                    if (gamepad2.dpad_down) {
                         robot.lift.setPositionAsync(0);
                     }
                     if (gamepad2.left_bumper) {
-                        robot.lift.setPositionAsync(100);
+                        robot.lift.setPositionAsync(300);
                     }
 
                     // state exit condition

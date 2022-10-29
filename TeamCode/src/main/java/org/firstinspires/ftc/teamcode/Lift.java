@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Lift {
     private DcMotor liftMotor;
 
-    private int TOP_LIMIT = 3225;
+    private int TOP_LIMIT = 3060;
 
     public int LARGE = TOP_LIMIT;
-    public int MIDDLE = TOP_LIMIT/2;
-    public int SMALL = TOP_LIMIT/3;
+    public int MIDDLE = 2220;
+    public int SMALL = 1411;
     public  int GROUND_JUNCTION = 1440/2;
 
     private int delta = 20;

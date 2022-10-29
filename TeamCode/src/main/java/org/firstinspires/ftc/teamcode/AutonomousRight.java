@@ -15,9 +15,14 @@ public class AutonomousRight extends LinearOpMode {
 
         Vision vision = new Vision(hardwareMap);
 
-        int id = vision.getIdentifier();
 
         waitForStart();
+
+        int id = vision.getIdentifier();
+
+        telemetry.addData("read pos", id);
+        telemetry.update();
+
 
         robot.drive.startSlowMode(.75);
 

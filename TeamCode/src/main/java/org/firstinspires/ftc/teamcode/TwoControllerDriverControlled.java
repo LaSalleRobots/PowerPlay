@@ -17,25 +17,33 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         boolean MakerIndustriesIsTheBest = true;
         boolean debounceX = false;
         Debouncer dx = new Debouncer();
+        Debouncer bumper = new Debouncer();
         boolean debounceF = false;
         boolean fieldCentric = false;
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
         //Quickly tweak sensitivity coefficients here
-        double gpad1MoveSpeed = 1;
-        double gpad1RotationSpeed = 0.75;
-        double gpad2MoveSpeed = 0.6;
-        double gpad2RotationSpeed = 0.4;
+        double gpad1MoveSpeed = .9;
+        double gpad1RotationSpeed = 0.6;
+        double gpad2MoveSpeed = 0.0;
+        double gpad2RotationSpeed = 0.0;
         //negative coefficient to account for backwards lift control. Invert as needed.
         double ManualModeLiftSensitivity = -50;
 
         waitForStart();
+        robot.lift.setPositionAsync(0);
 
         while (MakerIndustriesIsTheBest) {
+            telemetry.addData("Target", robot.lift.getTarget());
+            telemetry.addData("Position", robot.lift.getPosition());
+
             //Movement section
             {
                 //Note that both gamepads get control over robot movement, and can complement or counteract each other.
                 // prematurely combines joystick values, this is purely organizational
                 x = ((gpad1MoveSpeed * gamepad1.left_stick_x) + (gpad2MoveSpeed * gamepad2.left_stick_x));
+                if (gamepad1.right_bumper) {
+                    x = (0.5*gamepad1.left_stick_x);
+                }
                 y = ((gpad1MoveSpeed * gamepad1.left_stick_y) + (gpad2MoveSpeed * gamepad2.left_stick_y));
                 r = ((gpad1RotationSpeed * gamepad1.right_stick_x) + (gpad2RotationSpeed * gamepad2.right_stick_x));
                 //I'm not partial to field centric, but I still want it to be an available feature.
@@ -52,7 +60,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 //Toggle field centric (stole the whole debouncer from the claw code)
                 {
                     if (gamepad1.triangle || gamepad2.x) {
-                        if (debounceF = false) {
+                        if (debounceF == false) {
                             debounceF = true;
                             if (fieldCentric) {
                                 fieldCentric = false;
@@ -104,9 +112,15 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                     if (gamepad2.dpad_down) {
                         robot.lift.setPositionAsync(0);
                     }
-                    if (gamepad2.left_bumper) {
-                        robot.lift.setPositionAsync(300);
+
+                    // slight bump up for cone stacks
+                    if (bumper.isPressed(gamepad2.left_bumper)) {
+                        robot.lift.setPositionAsync(robot.lift.getTarget() + 10);
                     }
+                    if (bumper.isPressed(gamepad2.right_bumper)) {
+                        robot.lift.setPositionAsync(robot.lift.getTarget() - 10);
+                    }
+
 
                     // state exit condition
 
@@ -118,13 +132,25 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
             //Claw? (needs actual claw stuff)
             {
-                if (dx.isPressed(gamepad2.cross || gamepad2.a)) {
-                    robot.grabber.toggle();
+                if (gamepad2.cross) {
+                    if (debounceX == false) {
+                        debounceX = true;
+                        robot.grabber.toggle();
+                    }
+
+                }
+                {
+                    if (debounceX) {
+                        if ( !gamepad2.cross) {
+                            debounceX = false;
+                        }
+                    }
                 }
             }
 
             if (!opModeIsActive()) {break;}
-            }
+            telemetry.update();
+        }
 
         }
     private enum LiftControlMode { ManualControl, PresetControl }

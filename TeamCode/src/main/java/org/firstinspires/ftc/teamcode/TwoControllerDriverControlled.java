@@ -57,28 +57,10 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 }
                 //Applies... power or something. I think this works both for field-centric and not.
                 robot.drive.applyPower();
-                //Toggle field centric (stole the whole debouncer from the claw code)
-                {
-                    if (gamepad1.triangle || gamepad2.x) {
-                        if (debounceF == false) {
-                            debounceF = true;
-                            if (fieldCentric) {
-                                fieldCentric = false;
-
-                            }
-                            else {
-                                fieldCentric = true;
-                            }
-                        }
-
-                    }
-                    {
-                        if (debounceF) {
-                            if (!gamepad1.triangle || !gamepad2.x) {
-                                debounceF = false;
-                            }
-                        }
-                    }
+                //Toggle field centric mode
+                //First implementation of new debouncer. If this fails at competition just delete.
+                if (dx.isPressed(gamepad1.triangle || gamepad2.x)) {
+                    fieldCentric = !fieldCentric;
                 }
             }
 

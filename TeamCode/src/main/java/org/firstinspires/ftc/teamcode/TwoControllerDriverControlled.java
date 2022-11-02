@@ -43,15 +43,20 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
             //Movement section
             {
-                //Note that both gamepads get control over robot movement, and can complement or counteract each other.
-                // prematurely combines joystick values, this is purely organizational
-                x = ((gpad1MoveSpeed * gamepad1.left_stick_x) + (gpad2MoveSpeed * gamepad2.left_stick_x));
-                if (gamepad1.right_bumper) {
-                    x = (0.5*gamepad1.left_stick_x);
+
+                //Prematurely combining movement values for both slow mode and non-slow mode
+                if (gamepad1.right_bumper) { //slow mode
+                    x = (0.5 * gpad1MoveSpeed * gamepad1.left_stick_x);
+                    y = (0.5 * gpad1MoveSpeed * gamepad1.left_stick_y);
+                    r = (0.75 * gpad1RotationSpeed * gamepad1.right_stick_x)
                 }
-                y = ((gpad1MoveSpeed * gamepad1.left_stick_y) + (gpad2MoveSpeed * gamepad2.left_stick_y));
-                r = ((gpad1RotationSpeed * gamepad1.right_stick_x) + (gpad2RotationSpeed * gamepad2.right_stick_x));
-                //I'm not partial to field centric, but I still want it to be an available feature.
+                else { //normal mode. Dual-gamepad control functionality is implemented here, but currently dormant.
+                    x = ((gpad1MoveSpeed * gamepad1.left_stick_x) + (gpad2MoveSpeed * gamepad2.left_stick_x));
+                    y = ((gpad1MoveSpeed * gamepad1.left_stick_y) + (gpad2MoveSpeed * gamepad2.left_stick_y));
+                    r = ((gpad1RotationSpeed * gamepad1.right_stick_x) + (gpad2RotationSpeed * gamepad2.right_stick_x));
+                }
+
+                //Applies calculated movement for both field-centric and not
                 if (fieldCentric) {
                     //robot.getHeading() may be partially or not at all functional. Good luck, traveler.
                     robot.drive.calculateDirectionsFieldCentric(x, y, -r, robot.getHeading());
@@ -62,6 +67,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 }
                 //Applies... power or something. I think this works both for field-centric and not.
                 robot.drive.applyPower();
+
                 //Toggle field centric mode
                 //First implementation of new debouncer. If this fails at competition just delete.
                 if (dx.isPressed(gamepad1.triangle || gamepad2.x)) {
@@ -80,7 +86,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
                     //state machine exit condition
                     if (gamepad2.dpad_up || gamepad2.dpad_down ||
-                        gamepad2.dpad_right || gamepad2.dpad_left || gamepad2.left_bumper) {
+                        gamepad2.dpad_right || gamepad2.dpad_left || gamepad2.left_bumper || gamepad2.right_bumper) {
                         liftControlMode = LiftControlMode.PresetControl;
                     }
                 }
@@ -108,29 +114,24 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                         robot.lift.setPositionAsync(robot.lift.getTarget() - 10);
                     }
 
-
                     // state exit condition
-
                     if (gamepad2.right_stick_y > 0.25 || gamepad2.right_stick_y < -0.25 || gamepad2.b) {
                         liftControlMode = LiftControlMode.ManualControl;
                     }
                 }
             }
 
-            //Claw? (needs actual claw stuff)
+            //Claw
             {
                 if (gamepad2.cross) {
-                    if (debounceX == false) {
+                    if (!debounceX) {
                         debounceX = true;
                         robot.grabber.toggle();
                     }
-
                 }
-                {
+                else {
                     if (debounceX) {
-                        if ( !gamepad2.cross) {
-                            debounceX = false;
-                        }
+                        debounceX = false;
                     }
                 }
             }

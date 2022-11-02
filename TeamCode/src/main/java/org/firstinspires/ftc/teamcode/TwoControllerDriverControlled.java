@@ -48,7 +48,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 if (gamepad1.right_bumper) { //slow mode
                     x = (0.5 * gpad1MoveSpeed * gamepad1.left_stick_x);
                     y = (0.5 * gpad1MoveSpeed * gamepad1.left_stick_y);
-                    r = (0.75 * gpad1RotationSpeed * gamepad1.right_stick_x)
+                    r = (0.75 * gpad1RotationSpeed * gamepad1.right_stick_x);
                 }
                 else { //normal mode. Dual-gamepad control functionality is implemented here, but currently dormant.
                     x = ((gpad1MoveSpeed * gamepad1.left_stick_x) + (gpad2MoveSpeed * gamepad2.left_stick_x));

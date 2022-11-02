@@ -36,6 +36,11 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             telemetry.addData("Target", robot.lift.getTarget());
             telemetry.addData("Position", robot.lift.getPosition());
 
+            telemetry.addData("Front Right", robot.drive.rightFront.getCurrentPosition());
+            telemetry.addData("Front Left", robot.drive.leftFront.getCurrentPosition());
+            telemetry.addData("Back Right", robot.drive.rightBack.getCurrentPosition());
+            telemetry.addData("Back Left", robot.drive.leftBack.getCurrentPosition());
+
             //Movement section
             {
                 //Note that both gamepads get control over robot movement, and can complement or counteract each other.

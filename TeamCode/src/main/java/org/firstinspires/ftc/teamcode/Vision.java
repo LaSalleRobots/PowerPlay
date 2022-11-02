@@ -19,7 +19,7 @@ public class Vision {
     public int getIdentifier() {
         ArrayList<AprilTagDetection> detections = pipeline.getLatestDetections();
         if (detections.size() == 0) {
-            return 3; // henry said so
+            return -1;
         }
         return detections.get(0).id;
     }

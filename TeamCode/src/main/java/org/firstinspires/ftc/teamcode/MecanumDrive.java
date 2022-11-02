@@ -32,10 +32,10 @@ public class MecanumDrive {
     //back right
     private double brP = 0;
 
-    private final DcMotor leftFront;
-    private final DcMotor rightFront;
-    private final DcMotor leftBack;
-    private final DcMotor rightBack;
+    public final DcMotor leftFront;
+    public final DcMotor rightFront;
+    public final DcMotor leftBack;
+    public final DcMotor rightBack;
 
     private ElapsedTime runtime;
 
@@ -49,6 +49,17 @@ public class MecanumDrive {
         this.leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         this.rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         this.rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         this.runtime = runtime;
 
     }
@@ -232,4 +243,32 @@ public class MecanumDrive {
         this.speed = this.oldSpeed;
         return this;
     }
+
+    public MecanumDrive runToPosition(int LF, int RF, int LB, int RB) {
+        double p = .25;
+        this.leftFront.setPower(p);
+        this.rightFront.setPower(p);
+        this.leftBack.setPower(p);
+        this.rightBack.setPower(p);
+
+        this.leftFront.setTargetPosition(LF);
+        this.rightFront.setTargetPosition(RF);
+        this.leftBack.setTargetPosition(LB);
+        this.rightBack.setTargetPosition(RB);
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        return this;
+    }
 }
+

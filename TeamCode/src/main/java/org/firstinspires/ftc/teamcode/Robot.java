@@ -42,8 +42,8 @@ public class Robot {
 		// Setup Gyro Sensors
         this.imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        parameters.mode = BNO055IMU.SensorMode.GYRONLY;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.mode = BNO055IMU.SensorMode.IMU;
         //parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         this.imu.initialize(parameters);
     }
@@ -74,6 +74,11 @@ public class Robot {
     }
 
     public double getHeading() {
-        return imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
+        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
     }
+
+    public Orientation getAngles() {
+        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+    }
+
 }

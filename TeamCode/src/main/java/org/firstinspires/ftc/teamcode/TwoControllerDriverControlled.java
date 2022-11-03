@@ -65,6 +65,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                     //applies drive values. Notice the negative R.
                     robot.drive.calculateDirections(x, y, -r);
                 }
+
                 //Applies... power or something. I think this works both for field-centric and not.
                 robot.drive.applyPower();
 

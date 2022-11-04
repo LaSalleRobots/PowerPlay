@@ -18,12 +18,14 @@ class TwoControllerDriverControlled : LinearOpMode() {
         var y: Double
         var r: Double
         var target: Double
+        var targetAngle: Double
 
         // Debouncers
         val dx = Debouncer()
         val bumper = Debouncer()
         val clawdebouncer = Debouncer()
         val turnAroundDebouncer = Debouncer()
+        val turnAround = RotateToTarget()
 
         var fieldCentric = false
         var liftControlMode = LiftControlMode.ManualControl
@@ -107,7 +109,11 @@ class TwoControllerDriverControlled : LinearOpMode() {
             //Claw
 
             clawdebouncer.ifPressed(gamepad2.cross) { robot.grabber.toggle() }
-            turnAroundDebouncer.ifPressed(gamepad1.b) { robot.drive.rotateRight() }
+            turnAroundDebouncer.ifPressed(gamepad1.b) {
+                targetAngle = robot.heading + 180
+                if (targetAngle > 180) {targetAngle = targetAngle - 180}
+                turnAround.rotateTo(targetAngle)
+            }
 
             if (!opModeIsActive()) {
                 break

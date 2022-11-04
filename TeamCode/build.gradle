@@ -19,6 +19,7 @@ apply plugin: 'org.jetbrains.kotlin.android'
 dependencies {
     implementation project(':FtcRobotController')
     implementation 'androidx.core:core-ktx:+'
+    implementation 'androidx.core:core-ktx:+'
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
     implementation 'org.openftc:easyopencv:1.5.2'
 	implementation 'org.openftc:apriltag:1.0.0'

@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode
 
-import org.firstinspires.ftc.teamcode.Debouncer.isPressed
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import kotlin.Throws
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.firstinspires.ftc.teamcode.Debouncer
 import org.firstinspires.ftc.teamcode.TwoControllerDriverControlled.LiftControlMode
 
 @TeleOp(name = "Two-Controller Driver-Controlled")
@@ -109,11 +107,14 @@ class TwoControllerDriverControlled : LinearOpMode() {
             //Claw
 
             clawdebouncer.ifPressed(gamepad2.cross) { robot.grabber.toggle() }
+
             turnAroundDebouncer.ifPressed(gamepad1.b) {
                 targetAngle = robot.heading + 180
                 if (targetAngle > 180) {targetAngle = targetAngle - 180}
                 turnAround.rotateTo(targetAngle)
             }
+
+            turnAroundDebouncer.ifPressed(gamepad1.b) { robot.rotateToDegree(180.0); }
 
             if (!opModeIsActive()) {
                 break

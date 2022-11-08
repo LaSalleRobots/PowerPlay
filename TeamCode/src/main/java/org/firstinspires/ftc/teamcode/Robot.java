@@ -81,4 +81,22 @@ public class Robot {
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
     }
 
+    public Robot rotateToDegree(double degree) {
+        if (degree < getHeading()) {
+            while (degree < getHeading()) {
+                //a value of 2 clips the function to be 100% on each drive motor instead of 50% (to a sum of 100%)
+                drive.calculateDirections(0.0, 0.0, -2.0);
+                drive.applyPower();
+            }
+            drive.off();
+        }
+        if (degree > getHeading()) {
+            while (degree > getHeading()) {
+                drive.calculateDirections(0.0,0.0,2.0);
+                drive.applyPower();
+            }
+            drive.off();
+        }
+        return this;
+    }
 }

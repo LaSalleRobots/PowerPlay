@@ -18,11 +18,16 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         boolean debounceF = false;
         boolean fieldCentric = false;
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
+
         //Quickly tweak sensitivity coefficients here
         double gpad1MoveSpeed = .9;
         double gpad1RotationSpeed = 0.6;
         double gpad2MoveSpeed = 0.0;
         double gpad2RotationSpeed = 0.0;
+
+        // Exp for smoothing joystick values
+        double joystickSmoothingExp = 1.6;
+
         //negative coefficient to account for backwards lift control. Invert as needed.
         double ManualModeLiftSensitivity = -50;
 
@@ -39,8 +44,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             telemetry.addData("Back Left", robot.drive.leftBack.getCurrentPosition());
 
             //Movement section
-            {
-
+            {   
                 //Prematurely combining movement values for both slow mode and non-slow mode
                 if (gamepad1.right_bumper) { //slow mode
                     x = (0.5 * gpad1MoveSpeed * gamepad1.left_stick_x);
@@ -52,6 +56,10 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                     y = ((gpad1MoveSpeed * gamepad1.left_stick_y) + (gpad2MoveSpeed * gamepad2.left_stick_y));
                     r = ((gpad1RotationSpeed * gamepad1.right_stick_x) + (gpad2RotationSpeed * gamepad2.right_stick_x));
                 }
+
+                x = applyJoystickSmoothing(x, joystickSmoothingExp);
+                y = applyJoystickSmoothing(y, joystickSmoothingExp);
+                r = applyJoystickSmoothing(r, joystickSmoothingExp);
 
                 //Applies calculated movement for both field-centric and not
                 if (fieldCentric) {
@@ -137,7 +145,15 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             if (!opModeIsActive()) {break;}
             telemetry.update();
         }
+    }
 
+    private double applyJoystickSmoothing(double n, double a) {
+        if (n >= 0) {
+            return Math.pow(n, a);
+        }
+        else {
+            return -Math.pow(-n, a);
+        }
     }
     private enum LiftControlMode { ManualControl, PresetControl }
 }

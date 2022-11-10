@@ -67,11 +67,11 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 //Applies calculated movement for both field-centric and not
                 if (fieldCentric) {
                     //robot.getHeading() may be partially or not at all functional. Good luck, traveler.
-                    robot.drive.calculateDirectionsFieldCentric(x, y, -r, robot.getHeading());
+                    robot.drive.calculateDirectionsFieldCentric(x, y, r, robot.getHeading());
                 }
                 else {
                     //applies drive values. Notice the negative R.
-                    robot.drive.calculateDirections(x, y, -r);
+                    robot.drive.calculateDirections(x, y, r);
                 }
 
                 //Applies... power or something. I think this works both for field-centric and not.

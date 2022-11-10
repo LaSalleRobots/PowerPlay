@@ -20,6 +20,8 @@ public class MecanumDrive {
 
     private static final double FRICTION_COEF = 1.75;
 
+    static final double TICKS_PER_INCH = 40.88721;
+
     //front left
     private double flP = 0;
 
@@ -38,6 +40,7 @@ public class MecanumDrive {
     public final DcMotor rightBack;
 
     private ElapsedTime runtime;
+
 
     public MecanumDrive(HardwareMap hardwareMap, ElapsedTime runtime) {
         this.leftFront = hardwareMap.get(DcMotor.class, "fL");
@@ -162,9 +165,18 @@ public class MecanumDrive {
     }
 
     public MecanumDrive goDist(double runningDistance) {
-        applyPower();
-        sleep(runningDistance * FRICTION_COEF);
-        off();
+        /*this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
+
+
+
+        this.runToPosition((int) (flP * runningDistance * TICKS_PER_INCH),
+                (int) (frP * runningDistance * TICKS_PER_INCH),
+                (int) (blP * runningDistance * TICKS_PER_INCH),
+                (int) (brP * runningDistance * TICKS_PER_INCH));
+
         return this;
     }
 
@@ -261,13 +273,21 @@ public class MecanumDrive {
         this.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         this.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
+        //while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
+        while (true) {
+            if (Math.abs(leftFront.getTargetPosition()-leftFront.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(rightFront.getTargetPosition()-rightFront.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(leftBack.getTargetPosition()-leftBack.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(rightBack.getTargetPosition()-rightBack.getCurrentPosition()) < 10) {break;}
+        }
 
         this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+
+        this.off();
         return this;
     }
 }

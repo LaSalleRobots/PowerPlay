@@ -170,12 +170,17 @@ public class MecanumDrive {
         this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
 
+        // clip the powers to -1 and 1
+        int flD = 1; if (flP < 0) {flD=-1;}
+        int frD = 1; if (frP < 0) {frD=-1;}
+        int blD = 1; if (blP < 0) {blD=-1;}
+        int brD = 1; if (brP < 0) {brD=-1;}
 
 
-        this.runToPosition((int) (flP * runningDistance * TICKS_PER_INCH),
-                (int) (frP * runningDistance * TICKS_PER_INCH),
-                (int) (blP * runningDistance * TICKS_PER_INCH),
-                (int) (brP * runningDistance * TICKS_PER_INCH));
+        this.runToPosition((int) (flD * runningDistance * TICKS_PER_INCH),
+                (int) (frD * runningDistance * TICKS_PER_INCH),
+                (int) (blD * runningDistance * TICKS_PER_INCH),
+                (int) (brD * runningDistance * TICKS_PER_INCH));
 
         return this;
     }

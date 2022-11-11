@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous W/ Encoders Left")
+@Autonomous(name="Autonomous W/ Encoders Right")
 
 public class AutoWithEncodersRight extends LinearOpMode {
     @Override
@@ -44,7 +44,7 @@ public class AutoWithEncodersRight extends LinearOpMode {
         robot.drive.forward().goDist(2 * inchesPerBox);
         robot.sleep(0.5);
 
-        robot.drive.right().goDist(0.5 * inchesPerBox);
+        robot.drive.right().goDist(0.5 * inchesPerBox + 1);
         robot.sleep(0.5);
 
         robot.lift.setPosition(robot.lift.LARGE);
@@ -63,15 +63,15 @@ public class AutoWithEncodersRight extends LinearOpMode {
         robot.sleep(0.5);
 
         if (id == 1) {
-            robot.drive.left().goDist(1.5 * inchesPerBox);
+            robot.drive.left().goDist(5 * inchesPerBox);
             robot.sleep(0.5);
         }
         if (id == 2) {
-            robot.drive.left().goDist(0.5 * inchesPerBox);
+            robot.drive.right().goDist(0.5 * inchesPerBox);
             robot.sleep(0.5);
         }
         if (id == 3) {
-            robot.drive.right().goDist(0.5 * inchesPerBox);
+            robot.drive.right().goDist(1.5 * inchesPerBox);
             robot.sleep(0.5);
         }
     }

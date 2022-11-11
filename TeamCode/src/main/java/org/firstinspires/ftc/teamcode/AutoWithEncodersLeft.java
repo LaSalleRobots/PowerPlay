@@ -17,48 +17,63 @@ public class AutoWithEncodersLeft extends LinearOpMode {
 
         double ticksPerIn = 40.887;
         double inchesPerBox = 21.375; // 24 for meet
+        int id = 3;
 
         while (opModeInInit()) {
-            int id = vision.getIdentifier();
+            id = vision.getIdentifier();
             telemetry.addData("Id:", id);
             telemetry.update();
         }
 
+        if (id == -1) { id = 3; }
+
         waitForStart();
+
+
 
         robot.grabber.close();
         robot.sleep(0.5);
         robot.lift.setPosition(robot.lift.SMALL);
 
-        robot.drive.forward().goDist(1 * ticksPerIn);
+        robot.drive.forward().goDist(1);
         robot.sleep(0.5);
 
-        robot.drive.right().goDist(inchesPerBox * ticksPerIn);
+        robot.drive.right().goDist(inchesPerBox);
         robot.sleep(0.5);
 
-        robot.drive.forward().goDist(2 * inchesPerBox * ticksPerIn);
+        robot.drive.forward().goDist(2 * inchesPerBox);
         robot.sleep(0.5);
 
-        robot.drive.left().goDist(0.5 * inchesPerBox * ticksPerIn);
+        robot.drive.left().goDist(0.5 * inchesPerBox);
         robot.sleep(0.5);
 
         robot.lift.setPosition(robot.lift.LARGE);
         robot.sleep(0.5);
 
-        robot.drive.forward().goDist(3 * ticksPerIn);
+        robot.drive.forward().goDist(3);
         robot.sleep(0.5);
 
         robot.grabber.open();
         robot.sleep(0.5);
 
-        robot.drive.backward().goDist(3 * ticksPerIn);
+        robot.drive.backward().goDist(3);
         robot.sleep(0.5);
 
         robot.lift.setPosition(0);
         robot.sleep(0.5);
 
-        robot.drive.left().goDist(1.5 * inchesPerBox * ticksPerIn);
-        robot.sleep(0.5);
+        if (id == 1) {
+            robot.drive.left().goDist(1.5 * inchesPerBox);
+            robot.sleep(0.5);
+        }
+        if (id == 2) {
+            robot.drive.left().goDist(0.5 * inchesPerBox);
+            robot.sleep(0.5);
+        }
+        if (id == 3) {
+            robot.drive.right().goDist(0.5 * inchesPerBox);
+            robot.sleep(0.5);
+        }
 
 
 //        robot.grabber.close();

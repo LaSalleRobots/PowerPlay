@@ -54,7 +54,7 @@ public class AutoWithEncodersLeft extends LinearOpMode {
         robot.drive.backward().goDist(3 * ticksPerIn);
         robot.sleep(0.5);
 
-        robot.lift.setPosition(robot.lift.SMALL);
+        robot.lift.setPosition(0);
         robot.sleep(0.5);
 
         robot.drive.left().goDist(1.5 * inchesPerBox * ticksPerIn);

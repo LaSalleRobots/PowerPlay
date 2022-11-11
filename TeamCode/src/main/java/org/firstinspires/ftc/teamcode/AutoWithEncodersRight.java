@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous(name="Autonomous W/ Encoders Left")
 
-public class AutoWithEncodersLeft extends LinearOpMode {
+public class AutoWithEncodersRight extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         ElapsedTime time = new ElapsedTime();
@@ -38,13 +38,13 @@ public class AutoWithEncodersLeft extends LinearOpMode {
         robot.drive.forward().goDist(1);
         robot.sleep(0.5);
 
-        robot.drive.right().goDist(inchesPerBox);
+        robot.drive.left().goDist(inchesPerBox);
         robot.sleep(0.5);
 
         robot.drive.forward().goDist(2 * inchesPerBox);
         robot.sleep(0.5);
 
-        robot.drive.left().goDist(0.5 * inchesPerBox);
+        robot.drive.right().goDist(0.5 * inchesPerBox);
         robot.sleep(0.5);
 
         robot.lift.setPosition(robot.lift.LARGE);

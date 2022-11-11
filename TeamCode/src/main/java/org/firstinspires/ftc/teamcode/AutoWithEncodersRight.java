@@ -63,7 +63,7 @@ public class AutoWithEncodersRight extends LinearOpMode {
         robot.sleep(0.5);
 
         if (id == 1) {
-            robot.drive.left().goDist(5 * inchesPerBox);
+            robot.drive.left().goDist(.5 * inchesPerBox);
             robot.sleep(0.5);
         }
         if (id == 2) {

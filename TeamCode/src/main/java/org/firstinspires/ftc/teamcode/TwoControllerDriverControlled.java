@@ -38,6 +38,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         robot.lift.setPositionAsync(0);
 
         while (true) {
+            telemetry.addData("IMU heading: ", robot.getHeading());
             telemetry.addData("Target", robot.lift.getTarget());
             telemetry.addData("Position", robot.lift.getPosition());
 
@@ -135,11 +136,23 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 robot.grabber.toggle();
             }
 
+            //180
             if (turnAroundDebouncer.isPressed(gamepad1.b)) {
                 targetAngle = robot.getHeading() + 180;
-                if (targetAngle > 180) { targetAngle -= 180; }
+                if (targetAngle > 180) { targetAngle -= 360; }
                 robot.rotateToDegree(targetAngle);
             }
+
+
+            if (robot.bumperPressed()) {
+                robot.grabber.close();
+                robot.sleep(.5);
+                robot.lift.setPosition(robot.lift.getPosition()+500);
+                robot.sleep(.1);
+                robot.drive.backward().goFor(0.2);
+
+            }
+
 
             if (!opModeIsActive()) {break;}
             telemetry.update();

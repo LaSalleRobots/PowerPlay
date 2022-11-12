@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -25,6 +26,9 @@ public class Robot {
     public MecanumDrive drive;
     public Lift lift;
     public Grabber grabber;
+    public TouchSensor bumpSensorLeft, bumpSensorRight;
+    public Debouncer bumbDebouncer = new Debouncer();
+
 
 	public BNO055IMU imu = null;
 
@@ -37,6 +41,9 @@ public class Robot {
         this.drive = new MecanumDrive(hardwareMap, runtime);
         this.lift = new Lift(hardwareMap);
         this.grabber = new Grabber(hardwareMap);
+        this.bumpSensorLeft = hardwareMap.get(TouchSensor.class, "bumpLeft");
+        this.bumpSensorRight = hardwareMap.get(TouchSensor.class, "bumpRight");
+
 
 
 		// Setup Gyro Sensors
@@ -46,6 +53,8 @@ public class Robot {
         parameters.mode = BNO055IMU.SensorMode.IMU;
         //parameters.calibrationDataFile = "BNO055IMUCalibration.json";
         this.imu.initialize(parameters);
+
+        while (!imu.isGyroCalibrated()) { }
     }
 
     /*
@@ -74,29 +83,46 @@ public class Robot {
     }
 
     public double getHeading() {
-        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).firstAngle;
+        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).secondAngle;
     }
 
     public Orientation getAngles() {
         return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
     }
 
+    public boolean bumperPressed() {
+        return bumbDebouncer.isPressed(bumpSensorLeft.isPressed() && bumpSensorRight.isPressed());
+    }
+
     public Robot rotateToDegree(double degree) {
+        /*if (getHeading() + degree > 90) {
+            double difference = degree - (90 - getHeading());
+            double endAngle = 90 - difference;
+            while ()
+        } else if (getHeading() - degree < -90) {
+            double difference = degree - (90 - getHeading());
+            double endAngle = 90 - difference;
+        } else {
+
+        }
+
+
+        /*
         if (degree < getHeading()) {
             while (degree < getHeading()) {
                 //a value of 2 clips the function to be 100% on each drive motor instead of 50% (to a sum of 100%)
-                drive.calculateDirections(0.0, 0.0, -2.0);
+                drive.calculateDirections(0.0, 0.0, 2.0);
                 drive.applyPower();
             }
             drive.off();
         }
         if (degree > getHeading()) {
             while (degree > getHeading()) {
-                drive.calculateDirections(0.0,0.0,2.0);
+                drive.calculateDirections(0.0,0.0,-2.0);
                 drive.applyPower();
             }
             drive.off();
-        }
+        } */
         return this;
     }
 }

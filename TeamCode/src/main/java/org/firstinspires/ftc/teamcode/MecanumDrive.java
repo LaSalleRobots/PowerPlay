@@ -165,10 +165,12 @@ public class MecanumDrive {
     }
 
     public MecanumDrive goDist(double runningDistance) {
-        /*this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);*/
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
 
         // clip the powers to -1 and 1
         int flD = 1; if (flP < 0) {flD=-1;}

@@ -22,6 +22,8 @@ public class MecanumDrive {
 
     static final double TICKS_PER_INCH = 40.88721;
 
+    final int degree90 = 700;
+
     //front left
     private double flP = 0;
 
@@ -262,6 +264,47 @@ public class MecanumDrive {
         this.speed = this.oldSpeed;
         return this;
     }
+
+    public void rotateRightEncoder180() {
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.runToPosition(degree90 * 2, -degree90 * 2, degree90 * 2, -degree90 * 2);
+    }
+
+    public void rotateRightEncoder90() {
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.runToPosition(degree90, -degree90, degree90, -degree90);
+    }
+
+    public void rotateLeftEncoder90() {
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.runToPosition(-degree90, degree90, -degree90, degree90);
+    }
+
+    public void rotateRightEncoder45() {
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.runToPosition(degree90/2, -degree90/2, degree90/2, -degree90/2);
+    }
+
+    public void rotateLeftEncoder45() {
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.runToPosition(-degree90/2, degree90/2, -degree90/2, degree90/2);
+    }
+
 
     public MecanumDrive runToPosition(int LF, int RF, int LB, int RB) {
         double p = .25;

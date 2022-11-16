@@ -23,7 +23,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
         //Quickly tweak sensitivity coefficients here
         double gpad1MoveSpeed = .9;
-        double gpad1RotationSpeed = 0.6;
+        double gpad1RotationSpeed = 0.7;
         double gpad2MoveSpeed = 0.0;
         double gpad2RotationSpeed = 0.0;
 
@@ -32,13 +32,13 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
 
         //negative coefficient to account for backwards lift control. Invert as needed.
-        double ManualModeLiftSensitivity = -50;
+        double ManualModeLiftSensitivity = -80;
 
         waitForStart();
         robot.lift.setPositionAsync(0);
 
         while (true) {
-            telemetry.addData("IMU heading: ", robot.getHeading());
+            telemetry.addData("IMU heading: ", robot.getAngles());
             telemetry.addData("Target", robot.lift.getTarget());
             telemetry.addData("Position", robot.lift.getPosition());
 
@@ -74,7 +74,6 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                     //applies drive values. Notice the negative R.
                     robot.drive.calculateDirections(x, y, r);
                 }
-
                 //Applies... power or something. I think this works both for field-centric and not.
                 robot.drive.applyPower();
 

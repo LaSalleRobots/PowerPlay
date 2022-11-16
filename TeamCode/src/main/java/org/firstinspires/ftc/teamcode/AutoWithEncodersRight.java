@@ -15,8 +15,7 @@ public class AutoWithEncodersRight extends LinearOpMode {
 
         Vision vision = new Vision(hardwareMap);
 
-        double ticksPerIn = 40.887;
-        double inchesPerBox = 21.375; // 24 for meet
+        final double inchesPerBox = 23.3; // 24 for meet
         int id = 3;
 
         while (opModeInInit()) {
@@ -28,8 +27,6 @@ public class AutoWithEncodersRight extends LinearOpMode {
         if (id == -1) { id = 3; }
 
         waitForStart();
-
-
 
         robot.grabber.close();
         robot.sleep(0.5);
@@ -44,23 +41,24 @@ public class AutoWithEncodersRight extends LinearOpMode {
         robot.drive.forward().goDist(2 * inchesPerBox);
         robot.sleep(0.5);
 
-        robot.drive.right().goDist(0.5 * inchesPerBox + 1);
+        robot.drive.right().goDist(0.5 * inchesPerBox);
         robot.sleep(0.5);
 
         robot.lift.setPosition(robot.lift.LARGE);
         robot.sleep(0.5);
 
-        robot.drive.forward().goDist(3);
+        robot.drive.forward().goDist(4.25);
         robot.sleep(0.5);
 
         robot.grabber.open();
         robot.sleep(0.5);
 
-        robot.drive.backward().goDist(3);
+        robot.drive.backward().goDist(4.25);
         robot.sleep(0.5);
 
         robot.lift.setPosition(0);
         robot.sleep(0.5);
+
 
         if (id == 1) {
             robot.drive.left().goDist(.5 * inchesPerBox);

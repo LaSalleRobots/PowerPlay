@@ -26,7 +26,7 @@ public class Degree90Turn extends LinearOpMode {
 
         waitForStart();
 
-        robot.drive.rotateRightEncoder180();
+        robot.drive.rotateRightEncoder(180);
 
     }
 }

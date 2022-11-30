@@ -59,7 +59,7 @@ public class AutoWithEncodersLeftTest extends LinearOpMode {
         robot.lift.setPosition(0);
         robot.sleep(0.5);
 
-        robot.drive.rotateLeftEncoder90();
+        robot.drive.rotateLeftEncoder(90);
         //robot.sleep(0.5);
         //robot.drive.forward().goDist(1.8 * inchesPerBox);
         //robot.sleep(0.5);

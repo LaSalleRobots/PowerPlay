@@ -82,6 +82,19 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 if (dx.isPressed(gamepad1.triangle || gamepad2.x)) {
                     fieldCentric = !fieldCentric;
                 }
+
+                //180
+                if (turnAroundDebouncer.isPressed(gamepad1.b)) {
+                    robot.drive.rotateLeftEncoder(180);
+                }
+
+                //90
+                if (turnAroundDebouncer.isPressed(gamepad1.left_bumper)) {
+                    robot.drive.rotateLeftEncoder(90);
+                }
+                if (turnAroundDebouncer.isPressed(gamepad1.right_bumper)) {
+                    robot.drive.rotateRightEncoder(90);
+                }
             }
 
             //Lift section
@@ -135,12 +148,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 robot.grabber.toggle();
             }
 
-            //180
-            if (turnAroundDebouncer.isPressed(gamepad1.b)) {
-                targetAngle = robot.getHeading() + 180;
-                if (targetAngle > 180) { targetAngle -= 360; }
-                robot.rotateToDegree(targetAngle);
-            }
+
 
 
             if (robot.bumperPressed()) {

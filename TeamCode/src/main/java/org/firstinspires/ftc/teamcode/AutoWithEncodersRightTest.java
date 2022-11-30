@@ -62,7 +62,7 @@ public class AutoWithEncodersRightTest extends LinearOpMode {
         robot.lift.setPosition(0);
         robot.sleep(0.5);
 
-        robot.drive.rotateRightEncoder90();
+        robot.drive.rotateRightEncoder(90);
         robot.sleep(0.5);
         //robot.lift.setPosition(robot.lift.getTarget() + 50);
         //robot.sleep(0.5);

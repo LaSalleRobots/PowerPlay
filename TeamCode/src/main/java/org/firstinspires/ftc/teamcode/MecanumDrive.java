@@ -6,10 +6,16 @@ package org.firstinspires.ftc.teamcode;
  * Written By Lukas Werner ('22)
  */
 
+import android.hardware.Sensor;
+
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class MecanumDrive {
 
@@ -182,6 +188,101 @@ public class MecanumDrive {
                 (int) (blD * runningDistance * TICKS_PER_INCH),
                 (int) (brD * runningDistance * TICKS_PER_INCH));
 
+        return this;
+    }
+
+    public MecanumDrive interruptableGoDist(double runningDistance, Rev2mDistanceSensor sensor) {
+
+
+
+        // clip the powers to -1 and 1
+        int flD = 1; if (flP < 0) {flD=-1;}
+        int frD = 1; if (frP < 0) {frD=-1;}
+        int blD = 1; if (blP < 0) {blD=-1;}
+        int brD = 1; if (brP < 0) {brD=-1;}
+
+
+        this.interruptableGoTarget((int) (flD * runningDistance * TICKS_PER_INCH),
+                (int) (frD * runningDistance * TICKS_PER_INCH),
+                (int) (blD * runningDistance * TICKS_PER_INCH),
+                (int) (brD * runningDistance * TICKS_PER_INCH),
+                sensor);
+
+        return this;
+    }
+
+    public MecanumDrive interruptableGoTarget(int LF, int RF, int LB, int RB, Rev2mDistanceSensor sensor) {
+
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        this.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
+        double p = .1;
+        this.leftFront.setPower(p);
+        this.rightFront.setPower(p);
+        this.leftBack.setPower(p);
+        this.rightBack.setPower(p);
+
+        this.leftFront.setTargetPosition(LF);
+        this.rightFront.setTargetPosition(RF);
+        this.leftBack.setTargetPosition(LB);
+        this.rightBack.setTargetPosition(RB);
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        //while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
+        while (true) {
+            if (sensor.getDistance(DistanceUnit.CM) < 10) {
+
+                int lb = leftBack.getCurrentPosition();
+                int rb = rightBack.getCurrentPosition();
+                int lf = leftFront.getCurrentPosition();
+                int rf = rightFront.getCurrentPosition();
+
+
+
+                leftBack.setTargetPosition(lb);
+                rightBack.setTargetPosition(rb);
+                leftFront.setTargetPosition(lf);
+                rightFront.setTargetPosition(rf);
+
+                while (true) {
+                    if (Math.abs(leftFront.getTargetPosition()  - leftFront.getCurrentPosition()) < 10)  { break; }
+                    if (Math.abs(rightFront.getTargetPosition() - rightFront.getCurrentPosition()) < 10) { break; }
+                    if (Math.abs(leftBack.getTargetPosition()   - leftBack.getCurrentPosition()) < 10)   { break; }
+                    if (Math.abs(rightBack.getTargetPosition()  - rightBack.getCurrentPosition()) < 10)  { break; }
+                }
+                break;
+            }
+            if (Math.abs(leftFront.getTargetPosition()  - leftFront.getCurrentPosition()) < 10)  { break; }
+            if (Math.abs(rightFront.getTargetPosition() - rightFront.getCurrentPosition()) < 10) { break; }
+            if (Math.abs(leftBack.getTargetPosition()   - leftBack.getCurrentPosition()) < 10)   { break; }
+            if (Math.abs(rightBack.getTargetPosition()  - rightBack.getCurrentPosition()) < 10)  { break; }
+        }
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        this.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+
+        this.off();
         return this;
     }
 

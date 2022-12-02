@@ -15,7 +15,7 @@ public class AutoWithEncodersRight extends LinearOpMode {
 
         Vision vision = new Vision(hardwareMap);
 
-        final double inchesPerBox = 23.3; // 24 for meet
+        final double inchesPerBox = 21.5; // 23.3 for meet
         int id = 3;
 
         while (opModeInInit()) {

@@ -7,6 +7,7 @@ package org.firstinspires.ftc.teamcode;
  */
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -28,6 +29,7 @@ public class Robot {
     public Grabber grabber;
     public TouchSensor bumpSensorLeft, bumpSensorRight;
     public Debouncer bumbDebouncer = new Debouncer();
+    public Rev2mDistanceSensor poleSensor;
 
 
 	public BNO055IMU imu = null;
@@ -43,7 +45,7 @@ public class Robot {
         this.grabber = new Grabber(hardwareMap);
         this.bumpSensorLeft = hardwareMap.get(TouchSensor.class, "bumpLeft");
         this.bumpSensorRight = hardwareMap.get(TouchSensor.class, "bumpRight");
-
+        this.poleSensor = hardwareMap.get(Rev2mDistanceSensor.class, "Pole");
 
 
 

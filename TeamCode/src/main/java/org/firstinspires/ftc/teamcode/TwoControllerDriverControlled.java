@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+
 @TeleOp(name="Two-Controller Driver-Controlled")
 public class TwoControllerDriverControlled extends LinearOpMode {
     @Override
@@ -38,6 +40,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         robot.lift.setPositionAsync(0);
 
         while (true) {
+            telemetry.addData("Pole: ", robot.poleSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("IMU heading: ", robot.getAngles());
             telemetry.addData("Target", robot.lift.getTarget());
             telemetry.addData("Position", robot.lift.getPosition());
@@ -156,7 +159,9 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 robot.sleep(.5);
                 robot.lift.setPosition(robot.lift.getPosition()+500);
                 robot.sleep(.1);
-                robot.drive.backward().goFor(0.2);
+                robot.drive.backward().goFor(0.5);
+                robot.sleep(.1);
+
 
             }
 

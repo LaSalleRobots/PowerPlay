@@ -7,10 +7,6 @@ public class Grabber {
     public Servo left;
     public Servo right;
 
-
-    public int maxDegree = 180;
-    public int leftClawDegree = 0;
-    public int rightClawDegree = 0;
     public boolean state = true;
 
     public Grabber(HardwareMap hardwareMap) {
@@ -20,8 +16,8 @@ public class Grabber {
 
     public void open() {
         state = true;
-        left.setPosition(30.0/180);
-        right.setPosition(150.0/180);
+        left.setPosition(90.0/180.0);
+        right.setPosition(90.0/180.0);
     }
 
     public void close() {

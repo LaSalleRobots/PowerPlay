@@ -17,6 +17,7 @@ public class AutoWithSensorLeft extends LinearOpMode {
         Vision vision = new Vision(hardwareMap);
 
         final double inchesPerBox = 21.5; // 23.3 for meet
+        final double robotLength = 11.75;
         int id = 3;
 
         while (opModeInInit()) {
@@ -33,7 +34,7 @@ public class AutoWithSensorLeft extends LinearOpMode {
         robot.sleep(0.5);
         robot.lift.setPosition(robot.lift.SMALL);
 
-        robot.drive.forward().goDist(inchesPerBox * .1);
+        robot.drive.forward().goDist((inchesPerBox * .6) - robotLength);
         robot.sleep(0.5);
 
         robot.drive.right().goDist(inchesPerBox * .5);

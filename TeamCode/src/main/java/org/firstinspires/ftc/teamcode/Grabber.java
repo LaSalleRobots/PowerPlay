@@ -7,6 +7,7 @@ public class Grabber {
     public Servo left;
     public Servo right;
 
+
     public boolean state = true;
 
     public Grabber(HardwareMap hardwareMap) {
@@ -16,14 +17,14 @@ public class Grabber {
 
     public void open() {
         state = true;
-        left.setPosition(90.0/180.0);
-        right.setPosition(90.0/180.0);
+        left.setPosition(0);
+        right.setPosition(1);
     }
 
     public void close() {
         state = false;
-        left.setPosition(0);
-        right.setPosition(1);
+        left.setPosition(90.0 / 180.0);
+        right.setPosition(90.0 / 180.0);
     }
 
     public void toggle() {

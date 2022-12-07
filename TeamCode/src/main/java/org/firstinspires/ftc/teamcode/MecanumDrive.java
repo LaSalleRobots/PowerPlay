@@ -24,8 +24,6 @@ public class MecanumDrive {
     public double speed = 1;
     private  double oldSpeed = 1;
 
-    private static final double FRICTION_COEF = 1.75;
-
     static final double TICKS_PER_INCH = 40.88721;
 
     final double ticksPerDegree = 718 / 90;
@@ -46,6 +44,12 @@ public class MecanumDrive {
     public final DcMotor rightFront;
     public final DcMotor leftBack;
     public final DcMotor rightBack;
+
+    //record position
+    private int recordedLeftFrontPos;
+    private int recordedRightFrontPos;
+    private int recordedLeftBackPos;
+    private int recordedRightBackPos;
 
     private ElapsedTime runtime;
 
@@ -257,12 +261,7 @@ public class MecanumDrive {
                 leftFront.setTargetPosition(lf);
                 rightFront.setTargetPosition(rf);
 
-                while (true) {
-                    if (Math.abs(leftFront.getTargetPosition()  - leftFront.getCurrentPosition()) < 10)  { break; }
-                    if (Math.abs(rightFront.getTargetPosition() - rightFront.getCurrentPosition()) < 10) { break; }
-                    if (Math.abs(leftBack.getTargetPosition()   - leftBack.getCurrentPosition()) < 10)   { break; }
-                    if (Math.abs(rightBack.getTargetPosition()  - rightBack.getCurrentPosition()) < 10)  { break; }
-                }
+                waitForTargetPosition();
                 break;
             }
             if (Math.abs(leftFront.getTargetPosition()  - leftFront.getCurrentPosition()) < 10)  { break; }
@@ -314,43 +313,6 @@ public class MecanumDrive {
         return this;
     }
 
-    public MecanumDrive backwardsLeft() {
-        calculateDirections(-1, -1, 0);
-        applyPower();
-        return this;
-    }
-
-    public MecanumDrive backwardsRight() {
-        calculateDirections(1, -1, 0);
-        applyPower();
-        return this;
-    }
-
-    public MecanumDrive forwardsLeft() {
-        calculateDirections(-1, 1, 0);
-        applyPower();
-        return this;
-    }
-
-    public MecanumDrive forwardsRight() {
-        calculateDirections(1, 1, 0);
-        applyPower();
-        return this;
-    }
-
-    public MecanumDrive rotateLeft() {
-        calculateDirections(0, 0, -1);
-        applyPower();
-        return this;
-    }
-
-    public MecanumDrive rotateRight() {
-        calculateDirections(0, 0, 1);
-        applyPower();
-        return this;
-    }
-
-
     public MecanumDrive startSlowMode(double speed) {
         this.oldSpeed = this.speed;
         this.speed = speed;
@@ -376,7 +338,7 @@ public class MecanumDrive {
         this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        double p = .25;
+        double p = this.speed;
         this.leftFront.setPower(p);
         this.rightFront.setPower(p);
         this.leftBack.setPower(p);
@@ -393,12 +355,7 @@ public class MecanumDrive {
         this.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         //while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
-        while (true) {
-            if (Math.abs(leftFront.getTargetPosition()-leftFront.getCurrentPosition()) < 10) {break;}
-            if (Math.abs(rightFront.getTargetPosition()-rightFront.getCurrentPosition()) < 10) {break;}
-            if (Math.abs(leftBack.getTargetPosition()-leftBack.getCurrentPosition()) < 10) {break;}
-            if (Math.abs(rightBack.getTargetPosition()-rightBack.getCurrentPosition()) < 10) {break;}
-        }
+        waitForTargetPosition();
 
         this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -408,6 +365,33 @@ public class MecanumDrive {
 
         this.off();
         return this;
+
     }
+
+    public void recordPosition() {
+        recordedLeftBackPos = this.leftBack.getCurrentPosition();
+        recordedRightBackPos = this.rightBack.getCurrentPosition();
+        recordedLeftFrontPos = this.leftFront.getCurrentPosition();
+        recordedRightFrontPos = this.rightFront.getCurrentPosition();
+    }
+
+    public void restorePosition() {
+        leftBack.setTargetPosition(recordedLeftBackPos);
+        rightBack.setTargetPosition(recordedRightBackPos);
+        leftFront.setTargetPosition(recordedLeftFrontPos);
+        rightFront.setTargetPosition(recordedRightFrontPos);
+        waitForTargetPosition();
+    }
+
+    public void waitForTargetPosition() {
+        while (true) {
+            if (Math.abs(leftFront.getTargetPosition()-leftFront.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(rightFront.getTargetPosition()-rightFront.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(leftBack.getTargetPosition()-leftBack.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(rightBack.getTargetPosition()-rightBack.getCurrentPosition()) < 10) {break;}
+        }
+    }
+
+
 }
 

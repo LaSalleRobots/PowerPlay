@@ -31,6 +31,9 @@ public class Robot {
     public Debouncer bumbDebouncer = new Debouncer();
     public Rev2mDistanceSensor poleSensor;
 
+    final double inchesPerBox = 21.5; // 23.3 for meet
+    final double robotLength = 11.75;
+
 
 	public BNO055IMU imu = null;
 
@@ -98,7 +101,15 @@ public class Robot {
         return bumbDebouncer.isPressed(bumpSensorLeft.isPressed() && bumpSensorRight.isPressed());
     }
 
-    public Robot rotateToDegree(double degree) {
+    public Robot deliver(int poleHeight) {
+        //drive.recordPosition();
+        lift.setPosition(poleHeight);
+        drive.interruptableGoDist(inchesPerBox * 0.25, poleSensor);
+        sleep(0.5);
+        grabber.open();
+        //drive.restorePosition();
+        grabber.close();
+        lift.setPosition(0);
 
         return this;
     }

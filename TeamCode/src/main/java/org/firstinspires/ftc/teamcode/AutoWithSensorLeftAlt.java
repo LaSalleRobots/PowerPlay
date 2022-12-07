@@ -5,14 +5,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous W/ Sensor Left")
+@Autonomous(name="Autonomous W/ Sensor Left Alternate")
 
-public class AutoWithSensorLeft extends LinearOpMode {
+public class AutoWithSensorLeftAlt extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         ElapsedTime time = new ElapsedTime();
 
         Robot robot = new Robot(hardwareMap, time);
+        robot.drive.speed = 0.35;
+
 
         Vision vision = new Vision(hardwareMap);
 
@@ -33,63 +35,82 @@ public class AutoWithSensorLeft extends LinearOpMode {
         waitForStart();
 
         robot.grabber.close();
-        robot.sleep(0.5);
+        robot.sleep(0.25);
         robot.lift.setPosition(robot.lift.SMALL);
 
         robot.drive.forward().goDist((inchesPerBox * .6) - robotLength);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
         robot.drive.right().goDist(inchesPerBox * .5 * directionCoefficient);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
         robot.drive.forward().goDist(inchesPerBox * .25);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
         robot.drive.forward().interruptableGoDist(inchesPerBox * .25, robot.poleSensor);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
         robot.grabber.open();
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
         robot.drive.backward().goDist(inchesPerBox * .25);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
-        robot.drive.left().goDist(inchesPerBox * 1.5 * directionCoefficient);
-        robot.sleep(0.5);
+        // First cone now delivered (we are now in te center of the box)
+
+        robot.drive.right().goDist(inchesPerBox * 0.5 * directionCoefficient);
+        robot.sleep(0.25);
+
 
         robot.lift.setPositionAsync(robot.lift.FIVE_STACK);
         robot.drive.forward().goDist(inchesPerBox * 2);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
         robot.drive.rotateLeftEncoder(90 * directionCoefficient);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
-        robot.drive.forward().goDist(inchesPerBox * 0.5);
-        robot.sleep(0.5);
+
+        robot.drive.forward().goDist(inchesPerBox * 2.2);
+        robot.drive.startSlowMode(0.5);
+        telemetry.addData("mode", "started");
+        telemetry.update();
+        robot.drive.forward().goFor(0.75);
+        robot.drive.endSlowMode();
+        telemetry.addData("mode", "ended");
+        telemetry.update();
+
+        // skeptical may not be needed
+        robot.sleep(0.25);
 
         robot.grabber.close();
-        robot.sleep(0.5);
+        telemetry.addData("mode", "closed");
+        telemetry.update();
+
+        robot.sleep(0.25);
 
         robot.lift.setPosition(robot.lift.LARGE);
-        robot.sleep(0.5);
+        robot.sleep(0.1);
 
         robot.drive.backward().goDist(inchesPerBox * 2.1);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
         robot.drive.right().goDist(inchesPerBox * .5 * directionCoefficient);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
 
-        robot.deliver(robot.lift.LARGE);
-        robot.sleep(0.5);
+        robot.drive.forward().interruptableGoDist(inchesPerBox * .25, robot.poleSensor);
+        robot.sleep(0.25);
 
-        robot.grabber.close();
-        robot.sleep(0.5);
+        robot.grabber.open();
+        robot.sleep(0.25);
 
-        robot.lift.setPosition(0);
-        robot.sleep(0.5);
+        robot.drive.backward().goDist(inchesPerBox * .25);
+        robot.sleep(0.25);
 
         robot.drive.left().goDist(inchesPerBox * .5 * directionCoefficient);
-        robot.sleep(0.5);
+        robot.sleep(0.25);
+
+        robot.lift.setPosition(0);
+        robot.sleep(0.1);
 
         robot.drive.forward().goDist(inchesPerBox * (3 - Math.abs(id)));
 

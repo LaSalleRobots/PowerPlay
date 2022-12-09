@@ -33,6 +33,9 @@ public class Robot {
 
     final double inchesPerBox = 21.5; // 23.3 for meet
     final double robotLength = 11.75;
+    final double robotWidth = 15.25;
+    final double robotDistFront  = 8.75;
+    final double robotDistBack = 5.75;
 
 
 	public BNO055IMU imu = null;

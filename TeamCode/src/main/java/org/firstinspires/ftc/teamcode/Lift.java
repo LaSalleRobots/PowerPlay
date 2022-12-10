@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Supplier;
+
+
 public class Lift {
     private DcMotor liftMotor;
 
@@ -12,8 +15,10 @@ public class Lift {
     final public int LARGE = TOP_LIMIT;
     final public int MIDDLE = 2120;
     final public int SMALL = 1250;
+
     final public  int GROUND_JUNCTION = 720;
 
+    //public Supplier<Boolean> isStopRequested;
 
     final public int FIVE_STACK = 500;
     final public int FOUR_STACK = 400;
@@ -28,6 +33,8 @@ public class Lift {
         liftMotor.setPower(1);
         liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        //this.isStopRequested = isStopRequested;
 
     }
 
@@ -47,11 +54,11 @@ public class Lift {
     }
 
     public Lift setPositionAsync(int ticks) {
-        int limited = bound(ticks);
-        this.liftMotor.setTargetPosition(limited);
+        this.liftMotor.setTargetPosition(bound(ticks));
         this.liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         return this;
     }
+
 
     public Lift up() {
         int currentPosition = this.liftMotor.getTargetPosition();

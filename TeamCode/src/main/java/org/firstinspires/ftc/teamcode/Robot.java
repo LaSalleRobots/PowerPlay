@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Supplier;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -24,6 +25,7 @@ public class Robot {
 
     private final ElapsedTime runtime;
 
+    //public Supplier<Boolean> isStopRequested;
     public MecanumDrive drive;
     public Lift lift;
     public Grabber grabber;
@@ -31,7 +33,7 @@ public class Robot {
     public Debouncer bumbDebouncer = new Debouncer();
     public Rev2mDistanceSensor poleSensor;
 
-    final double inchesPerBox = 21.5; // 23.3 for meet
+    final double inchesPerBox = 23.3; // 23.3 for meet; 21.5 for school
     final double robotLength = 11.75;
     final double robotWidth = 15.25;
     final double robotDistFront  = 8.75;
@@ -52,6 +54,7 @@ public class Robot {
         this.bumpSensorLeft = hardwareMap.get(TouchSensor.class, "bumpLeft");
         this.bumpSensorRight = hardwareMap.get(TouchSensor.class, "bumpRight");
         this.poleSensor = hardwareMap.get(Rev2mDistanceSensor.class, "Pole");
+        //this.isStopRequested = isStopRequested;
 
 
 

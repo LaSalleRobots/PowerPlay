@@ -12,7 +12,9 @@ public class AutonomousWithSensorRight extends LinearOpMode {
         ElapsedTime time = new ElapsedTime();
 
         Robot robot = new Robot(hardwareMap, time);
+
         robot.drive.speed = 0.35;
+
 
 
         Vision vision = new Vision(hardwareMap);
@@ -62,11 +64,11 @@ public class AutonomousWithSensorRight extends LinearOpMode {
         robot.drive.right().goDist(inchesPerBox * 0.5 * directionCoefficient);
         robot.sleep(0.25);
 
-        robot.drive.backward().goFor(1);
-        robot.sleep(0.25);
+        //robot.drive.backward().goFor(1);
+        //robot.sleep(0.25);
 
         robot.lift.setPositionAsync(robot.lift.FIVE_STACK);
-        robot.drive.forward().variableGoDist(inchesPerBox * 2.2, .35);
+        robot.drive.forward().variableGoDist(inchesPerBox * 1.9, .35);
         robot.sleep(0.25);
 
         robot.drive.rotateLeftEncoder(90 * directionCoefficient);
@@ -103,14 +105,11 @@ public class AutonomousWithSensorRight extends LinearOpMode {
         robot.drive.right().goDist((inchesPerBox * .95 - robot.robotDistFront) * directionCoefficient);
         robot.sleep(0.25);
 
-
-        //robot.drive.backward().goDist((inchesPerBox * 1.9) - robot.robotDistFront);
-        // robot.sleep(0.25);
-
-        //robot.drive.rotateRightEncoder(90 * directionCoefficient);
-
         robot.drive.forward().interruptableGoDist(inchesPerBox * .3, robot.poleSensor);
         robot.sleep(0.25);
+
+        robot.lift.setPosition(robot.lift.getPosition() - 220);
+        robot.sleep(.25);
 
         robot.grabber.open();
         robot.sleep(0.25);
@@ -122,6 +121,7 @@ public class AutonomousWithSensorRight extends LinearOpMode {
         robot.sleep(0.1);
 
         robot.drive.left().goDist(inchesPerBox * (2 + (directionCoefficient/2.0) -(Math.abs(id))));
+
         // this is for right only
 
     }

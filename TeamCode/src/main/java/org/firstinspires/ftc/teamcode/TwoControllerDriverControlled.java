@@ -40,6 +40,10 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         robot.lift.setPositionAsync(0);
 
         while (true) {
+
+            if (!opModeIsActive()) {break;}
+            telemetry.update();
+
             telemetry.addData("Pole: ", robot.poleSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("IMU heading: ", robot.getAngles());
             telemetry.addData("Target", robot.lift.getTarget());
@@ -54,8 +58,8 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             {   
                 //Prematurely combining movement values for both slow mode and non-slow mode
                 if (gamepad1.right_bumper) { //slow mode
-                    x = (0.5 * gpad1MoveSpeed * gamepad1.left_stick_x);
-                    y = (0.5 * gpad1MoveSpeed * gamepad1.left_stick_y);
+                    x = (0.75 * gpad1MoveSpeed * gamepad1.left_stick_x);
+                    y = (0.75 * gpad1MoveSpeed * gamepad1.left_stick_y);
                     r = (0.75 * gpad1RotationSpeed * gamepad1.right_stick_x);
                 }
                 else { //normal mode. Dual-gamepad control functionality is implemented here, but currently dormant.
@@ -92,13 +96,16 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 }
 
                 //90
-                if (turnAroundDebouncer.isPressed(gamepad1.left_bumper)) {
+                if (turnAroundDebouncer.isPressed(gamepad1.left_trigger > .5)) {
                     robot.drive.rotateLeftEncoder(90);
                 }
-                if (turnAroundDebouncer.isPressed(gamepad1.right_bumper)) {
+                if (turnAroundDebouncer.isPressed(gamepad1.right_trigger > 0.5)) {
                     robot.drive.rotateRightEncoder(90);
                 }
             }
+
+            if (!opModeIsActive()) {break;}
+            telemetry.update();
 
             //Lift section
             {
@@ -107,6 +114,8 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                     if (gamepad2.right_stick_y > 0.1 || gamepad2.right_stick_y < -0.1) {
                         target = (robot.lift.getPosition() + (ManualModeLiftSensitivity * gamepad2.right_stick_y));
                         robot.lift.setPositionAsync((int) target);
+
+
                     }
 
                     //state machine exit condition
@@ -115,6 +124,9 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                         liftControlMode = LiftControlMode.PresetControl;
                     }
                 }
+
+                if (!opModeIsActive()) {break;}
+                telemetry.update();
 
                 if (liftControlMode == LiftControlMode.PresetControl) {
                     // operation while in Preset Control state
@@ -146,12 +158,16 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 }
             }
 
+            if (!opModeIsActive()) {break;}
+            telemetry.update();
+
             //Claw
             if (clawdebouncer.isPressed(gamepad2.cross)) {
                 robot.grabber.toggle();
             }
 
-
+            if (!opModeIsActive()) {break;}
+            telemetry.update();
 
 
             if (robot.bumperPressed()) {

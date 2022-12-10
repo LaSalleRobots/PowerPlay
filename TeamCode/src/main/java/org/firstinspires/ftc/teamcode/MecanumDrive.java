@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
+import org.firstinspires.ftc.robotcore.external.Supplier;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class MecanumDrive {
@@ -26,7 +27,7 @@ public class MecanumDrive {
 
     static final double TICKS_PER_INCH = 40.88721;
 
-    final double ticksPerDegree = 700 / 90;
+    final double ticksPerDegree = 700 / 90.0;
 
     //front left
     private double flP = 0;
@@ -45,6 +46,8 @@ public class MecanumDrive {
     public final DcMotor leftBack;
     public final DcMotor rightBack;
 
+    //public Supplier<Boolean> isStopRequested;
+
     //record position
     private int recordedLeftFrontPos;
     private int recordedRightFrontPos;
@@ -59,6 +62,8 @@ public class MecanumDrive {
         this.rightFront = hardwareMap.get(DcMotor.class, "fR");
         this.leftBack = hardwareMap.get(DcMotor.class, "bL");
         this.rightBack = hardwareMap.get(DcMotor.class, "bR");
+
+        //this.isStopRequested = isStopRequested;
 
         this.leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         this.leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -269,6 +274,7 @@ public class MecanumDrive {
 
         //while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
         while (true) {
+
             if (sensor.getDistance(DistanceUnit.CM) < 10) {
 
                 int lb = leftBack.getCurrentPosition();
@@ -479,6 +485,7 @@ public class MecanumDrive {
 
     public void waitForTargetPosition() {
         while (true) {
+
             if (Math.abs(leftFront.getTargetPosition()-leftFront.getCurrentPosition()) < 10) {break;}
             if (Math.abs(rightFront.getTargetPosition()-rightFront.getCurrentPosition()) < 10) {break;}
             if (Math.abs(leftBack.getTargetPosition()-leftBack.getCurrentPosition()) < 10) {break;}

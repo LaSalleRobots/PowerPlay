@@ -41,6 +41,10 @@ public class MecanumDrive {
     //back right
     private double brP = 0;
 
+	//gyro stabilization
+	public double LockPosition = 0;
+	private double LockPositionModifier = 0;
+
     public final DcMotor leftFront;
     public final DcMotor rightFront;
     public final DcMotor leftBack;
@@ -153,6 +157,18 @@ public class MecanumDrive {
         calculateDirectionsRobotCentric(x,y,turn);
         return this;
     }
+
+	public MecanumDrive calcGryoStabilized(double x, double y, double target) {
+		//PLEASE REPLACE ALL INSTANCES OF GYRO with the proper getAngle() function!
+		if ((target + LockPositionModifier) - GYRO > 360) {
+			LockPositionModifier = LockPositionModifier - 360;
+		}
+		if ((target + LockPositionModifier) - GYRO < -360) {
+			LockPositionModifier = LockPositionModifier + 360;
+		}
+		LockPosition = (target + LockPositionModifier - GYRO);
+		calculateDirectionsRobotCentric(x,y,LockPosition);
+		//see Roman if this doesn't work. He doesn't know how it works either, but he made it.
 
     public MecanumDrive off() {
         flP = 0;

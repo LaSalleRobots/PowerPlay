@@ -16,4 +16,9 @@ class Debouncer {
         }
         return false;
     }
+
+	public void reset() {
+		lock = false;
+	}
 }
+

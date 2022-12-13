@@ -391,7 +391,7 @@ public class MecanumDrive {
 		
 		// this will stop moving with an acuracy of 2 degrees
 		while (Math.abs(tmpTarget - (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - gyroModifier)) < 2) { 
-			this.calcGryoStabilized(0,0, tempTarget);
+			this.calcGryoStabilized(0,0, tmpTarget);
         	this.applyPower();
 		}
 	}

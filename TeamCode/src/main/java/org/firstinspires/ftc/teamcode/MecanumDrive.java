@@ -385,13 +385,21 @@ public class MecanumDrive {
         return this;
     }
 
-	// This is a RELATIVE turn to the robots current position. Use: turnAbsolute()
+	// This is a RELATIVE turn to the robots current position. Use if you want : turnAbsolute()
 	public MecanumDrive turn(double degrees) {
 		double tmpTarget = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - degrees;
-		
+	
 		// this will stop moving with an acuracy of 2 degrees
 		while (Math.abs(tmpTarget - (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - gyroModifier)) < 2) { 
 			this.calcGryoStabilized(0,0, tmpTarget);
+        	this.applyPower();
+		}
+	}
+
+	public MecanumDrive turnAbsolute(double degree) {
+		// this will stop moving with an acuracy of 2 degrees
+		while (Math.abs(degree - (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - gyroModifier)) < 2) { 
+			this.calcGryoStabilized(0,0, degree);
         	this.applyPower();
 		}
 	}

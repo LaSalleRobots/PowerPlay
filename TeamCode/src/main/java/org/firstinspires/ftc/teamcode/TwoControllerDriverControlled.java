@@ -3,6 +3,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name="Two-Controller Driver-Controlled")
 public class TwoControllerDriverControlled extends LinearOpMode {
@@ -16,7 +17,8 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         Debouncer dx = new Debouncer(),
         bumper = new Debouncer(),
         clawdebouncer = new Debouncer(),
-        turnAroundDebouncer = new Debouncer();
+        turnAroundDebouncer = new Debouncer(),
+        gyroAssistDebouncer = new Debouncer();
 
         //Coefficients
         double gpad1MoveSpeed = 1;
@@ -63,12 +65,37 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 y = applyJoystickSmoothing(y, joystickSmoothingExp);
                 r = applyJoystickSmoothing(r, joystickSmoothingExp);
 
+                //employs gyro stabilization to linear driving
                 if (Math.abs(gamepad1.right_stick_x) < 0.05) {
-                    robot.drive.calcGyroStabilized(x, y, Target);
+                    if (gyroAssistDebouncer.isPressed(Math.abs(gamepad1.right_stick_y) < 0.05)) {
+                        //identifies the desired heading angle to hold. This should only happen once per period of time that the right joystick is < 0.05
+                        target = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+                    }
+                    robot.drive.calcGyroStabilized(x, y, target);
                 }
-                robot.drive.calculateDirections(x, y, r);
-
-
+                else {
+                    robot.drive.calculateDirections(x, y, r);
+                }
+                //90 degree turn left/right
+                if (gamepad1.left_trigger > 0.5) {
+                    if (turnAroundDebouncer.isPressed(gamepad1.left_trigger > 0.5)){
+                        target = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - 90;
+                    }
+                    robot.drive.calcGyroStabilized(0, 0, target);
+                }
+                if (gamepad1.right_trigger > 0.5) {
+                    if (turnAroundDebouncer.isPressed(gamepad1.right_trigger > 0.5)){
+                        target = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) + 90;
+                    }
+                    robot.drive.calcGyroStabilized(0, 0, target);
+                }
+                //180 degree turn
+                if (gamepad1.b) {
+                    if (turnAroundDebouncer.isPressed(gamepad1.b)) {
+                        target = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) + 180;
+                    }
+                    robot.drive.calcGyroStabilized(0, 0, target);
+                }
 
                 robot.drive.applyPower();
             }

@@ -44,8 +44,7 @@ public class MecanumDrive {
     private double brP = 0;
 
 	//gyro stabilization
-	public double LockPosition = 0;
-	private double LockPositionModifier = 0;
+	public double gyroModifier = 0;
 
     public final DcMotor leftFront;
     public final DcMotor rightFront;
@@ -164,16 +163,27 @@ public class MecanumDrive {
     }
 
 	public MecanumDrive calcGryoStabilized(double x, double y, double target) {
-        //PLEASE REPLACE ALL INSTANCES OF GYRO with the proper getAngle() function!
-        double GYRO = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-        if ((target + LockPositionModifier) - GYRO > 360) {
-            LockPositionModifier = LockPositionModifier - 360;
+        double gyroAngle = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+
+		if (target - (gyroAngle + gyroModifier) > 180) {
+			gyroModifier += 360;
         }
-        if ((target + LockPositionModifier) - GYRO < -360) {
-            LockPositionModifier = LockPositionModifier + 360;
+		if (target - (gyroAngle + gyroModifier) < -180) {
+			gyroModifier -= 360;
         }
-        LockPosition = (target + LockPositionModifier - GYRO);
-        calculateDirectionsRobotCentric(x, y, LockPosition);
+
+		/*
+		 * This 1 and -1 should probably be variable as we get closer to our targets.
+		 */
+
+		if (target - (gyroAngle + gyroModifier) > 0) {
+			calculateDirectionsRobotCentric(x, y, 1); 
+		}
+		if (target - (gyroAngle + gyroModifier) < 0) {
+			calculateDirectionsRobotCentric(x, y, -1);
+		}
+
+        
         //see Roman if this doesn't work. He doesn't know how it works either, but he made it.
         return this;
     }
@@ -374,6 +384,17 @@ public class MecanumDrive {
         this.speed = this.oldSpeed;
         return this;
     }
+
+	// This is a RELATIVE turn to the robots current position. Use: turnAbsolute()
+	public MecanumDrive turn(double degrees) {
+		double tmpTarget = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - degrees;
+		
+		// this will stop moving with an acuracy of 2 degrees
+		while (Math.abs(tmpTarget - (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - gyroModifier)) < 2) { 
+			this.calcGryoStabilized(0,0, tempTarget);
+        	this.applyPower();
+		}
+	}
 
     public void rotateRightEncoder(int degree) {
         this.runToPosition((int) (degree * 754/90.0), -(int) (degree * 605/90.0), (int) (degree * 605/90.0), -(int) (degree * 724/90.0));

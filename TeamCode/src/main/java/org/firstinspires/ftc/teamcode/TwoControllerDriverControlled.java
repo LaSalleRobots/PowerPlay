@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode;
-
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-
 @TeleOp(name="Two-Controller Driver-Controlled")
 public class TwoControllerDriverControlled extends LinearOpMode {
     @Override
@@ -15,49 +13,41 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         Robot robot = new Robot(hardwareMap, time);
         double x, y, r, target, targetAngle;
 
-        // Debouncers
+        //Debouncers
         Debouncer dx = new Debouncer(),
         bumper = new Debouncer(),
         clawdebouncer = new Debouncer(),
         turnAroundDebouncer = new Debouncer();
 
-        boolean fieldCentric = false;
-        LiftControlMode liftControlMode = LiftControlMode.ManualControl;
-
-        //Quickly tweak sensitivity coefficients here
-        double gpad1MoveSpeed = .9;
+        //Coefficients
+        double gpad1MoveSpeed = 1;
         double gpad1RotationSpeed = 0.7;
         double gpad2MoveSpeed = 0.0;
         double gpad2RotationSpeed = 0.0;
-        double tempTarget = 0;
-
-        // Exp for smoothing joystick values
         double joystickSmoothingExp = 1.6;
-
-
-        //negative coefficient to account for backwards lift control. Invert as needed.
+        //negative lift coefficient. Change as needed.
         double ManualModeLiftSensitivity = -80;
+
+        LiftControlMode liftControlMode = LiftControlMode.ManualControl;
 
         waitForStart();
         robot.lift.setPositionAsync(0);
 
         while (true) {
-
             if (!opModeIsActive()) {break;}
+            //Telemetry
             telemetry.update();
-
             telemetry.addData("Pole: ", robot.poleSensor.getDistance(DistanceUnit.CM));
             telemetry.addData("IMU heading: ", robot.getHeading());
             telemetry.addData("Target", robot.lift.getTarget());
             telemetry.addData("Position", robot.lift.getPosition());
-
             telemetry.addData("Front Right", robot.drive.rightFront.getCurrentPosition());
             telemetry.addData("Front Left", robot.drive.leftFront.getCurrentPosition());
             telemetry.addData("Back Right", robot.drive.rightBack.getCurrentPosition());
             telemetry.addData("Back Left", robot.drive.leftBack.getCurrentPosition());
 
             //Movement section
-            {   
+            {
                 //Prematurely combining movement values for both slow mode and non-slow mode
                 if (gamepad1.right_bumper) { //slow mode
                     x = (0.75 * gpad1MoveSpeed * gamepad1.left_stick_x);
@@ -74,39 +64,16 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 y = applyJoystickSmoothing(y, joystickSmoothingExp);
                 r = applyJoystickSmoothing(r, joystickSmoothingExp);
 
-                //Applies calculated movement for both field-centric and not
-                if (fieldCentric) {
-                    //robot.getHeading() may be partially or not at all functional. Good luck, traveler.
-                    robot.drive.calculateDirectionsFieldCentric(x, y, r, robot.getHeading());
+                if (Math.abs(gamepad1.right_stick_x) < 0.05) {
+                    robot.drive.calcGyroStabilized(x, y, Target);
                 }
-                else {
-                    //applies drive values. Notice the negative R.
-                    robot.drive.calculateDirections(x, y, r);
-                }
-                //Toggle field centric mode
-                //First implementation of new debouncer. If this fails at competition just delete.
-                if (dx.isPressed(gamepad1.triangle || gamepad2.x)) {
-                    fieldCentric = !fieldCentric;
-                }
+                robot.drive.calculateDirections(x, y, r);
 
-                //180
-                if (turnAroundDebouncer.isPressed(gamepad1.b)) {
-                    robot.drive.rotateLeftEncoder(180);
-                }
 
-                //90
-                if (turnAroundDebouncer.isPressed(gamepad1.left_trigger > .5)) {
-                    tempTarget = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-90;
-                    while (turnAroundDebouncer.isPressed(gamepad1.left_trigger > .5)) {
-                        robot.drive.calcGryoStabilized(0,0, tempTarget);
-                        robot.drive.applyPower();
-                    }
-                }
-                if (turnAroundDebouncer.isPressed(gamepad1.right_trigger > 0.5)) {
-                    robot.drive.calcGryoStabilized(0,0, robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+90);
-                }
+
                 robot.drive.applyPower();
             }
+
 
             if (!opModeIsActive()) {break;}
             telemetry.update();
@@ -173,7 +140,6 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             if (!opModeIsActive()) {break;}
             telemetry.update();
 
-
             if (robot.bumperPressed()) {
                 robot.grabber.close();
                 robot.sleep(.5);
@@ -181,10 +147,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 robot.sleep(.1);
                 robot.drive.backward().goFor(0.5);
                 robot.sleep(.1);
-
-
             }
-
 
             if (!opModeIsActive()) {break;}
             telemetry.update();

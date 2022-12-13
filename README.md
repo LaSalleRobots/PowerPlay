@@ -10,7 +10,7 @@ The 2022-2023 season of the First Tech Challenge. This year's goal is to place c
 ## Software Stack
 
 The software stack used in our robot is the following:
-* 8.0 SDK
+* 8.1.1 SDK
 * EasyOpenCV
 * OpenFTC AprilTags
 * Custom Robot Abstractions (Robot, Drivetrain, Mechanisms)

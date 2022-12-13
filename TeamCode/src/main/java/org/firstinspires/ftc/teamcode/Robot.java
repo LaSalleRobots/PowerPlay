@@ -8,10 +8,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -40,15 +42,25 @@ public class Robot {
     final double robotDistBack = 5.75;
 
 
-	public BNO055IMU imu = null;
+	public IMU imu = null;
 
 
     // setup class initializer
     public Robot(HardwareMap hardwareMap, ElapsedTime runtime) {
         this.runtime = runtime;
 
+
+        this.imu = hardwareMap.get(IMU.class, "imu");
+
+        IMU.Parameters params = new IMU.Parameters(
+                new RevHubOrientationOnRobot(
+                        RevHubOrientationOnRobot.LogoFacingDirection.RIGHT,
+                        RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)
+        );
+        imu.initialize(params);
+
         // Setup Devices
-        this.drive = new MecanumDrive(hardwareMap, runtime);
+        this.drive = new MecanumDrive(hardwareMap, runtime, imu);
         this.lift = new Lift(hardwareMap);
         this.grabber = new Grabber(hardwareMap);
         this.bumpSensorLeft = hardwareMap.get(TouchSensor.class, "bumpLeft");
@@ -57,17 +69,6 @@ public class Robot {
         //this.isStopRequested = isStopRequested;
 
 
-
-		// Setup Gyro Sensors
-        this.imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        parameters.mode = BNO055IMU.SensorMode.IMU;
-        //parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-        this.imu.initialize(parameters);
-
-        while (!imu.isGyroCalibrated()) { }
-        BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
     }
 
     /*
@@ -96,11 +97,11 @@ public class Robot {
     }
 
     public double getHeading() {
-        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES).thirdAngle;
+        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 
     public Orientation getAngles() {
-        return imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+        return imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
     }
 
     public boolean bumperPressed() {

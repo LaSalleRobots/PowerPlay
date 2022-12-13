@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 @TeleOp(name="Two-Controller Driver-Controlled")
@@ -28,6 +29,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         double gpad1RotationSpeed = 0.7;
         double gpad2MoveSpeed = 0.0;
         double gpad2RotationSpeed = 0.0;
+        double tempTarget = 0;
 
         // Exp for smoothing joystick values
         double joystickSmoothingExp = 1.6;
@@ -45,7 +47,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             telemetry.update();
 
             telemetry.addData("Pole: ", robot.poleSensor.getDistance(DistanceUnit.CM));
-            telemetry.addData("IMU heading: ", robot.getAngles());
+            telemetry.addData("IMU heading: ", robot.getHeading());
             telemetry.addData("Target", robot.lift.getTarget());
             telemetry.addData("Position", robot.lift.getPosition());
 
@@ -81,9 +83,6 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                     //applies drive values. Notice the negative R.
                     robot.drive.calculateDirections(x, y, r);
                 }
-                //Applies... power or something. I think this works both for field-centric and not.
-                robot.drive.applyPower();
-
                 //Toggle field centric mode
                 //First implementation of new debouncer. If this fails at competition just delete.
                 if (dx.isPressed(gamepad1.triangle || gamepad2.x)) {
@@ -97,11 +96,16 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
                 //90
                 if (turnAroundDebouncer.isPressed(gamepad1.left_trigger > .5)) {
-                    robot.drive.rotateLeftEncoder(90);
+                    tempTarget = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)-90;
+                    while (turnAroundDebouncer.isPressed(gamepad1.left_trigger > .5)) {
+                        robot.drive.calcGryoStabilized(0,0, tempTarget);
+                        robot.drive.applyPower();
+                    }
                 }
                 if (turnAroundDebouncer.isPressed(gamepad1.right_trigger > 0.5)) {
-                    robot.drive.rotateRightEncoder(90);
+                    robot.drive.calcGryoStabilized(0,0, robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)+90);
                 }
+                robot.drive.applyPower();
             }
 
             if (!opModeIsActive()) {break;}

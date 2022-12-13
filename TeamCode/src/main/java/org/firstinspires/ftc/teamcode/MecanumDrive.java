@@ -12,10 +12,12 @@ import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
 import org.firstinspires.ftc.robotcore.external.Supplier;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class MecanumDrive {
@@ -60,13 +62,16 @@ public class MecanumDrive {
 
     private ElapsedTime runtime;
 
+    private IMU imu;
 
-    public MecanumDrive(HardwareMap hardwareMap, ElapsedTime runtime) {
+
+    public MecanumDrive(HardwareMap hardwareMap, ElapsedTime runtime, IMU imu) {
         this.leftFront = hardwareMap.get(DcMotor.class, "fL");
         this.rightFront = hardwareMap.get(DcMotor.class, "fR");
         this.leftBack = hardwareMap.get(DcMotor.class, "bL");
         this.rightBack = hardwareMap.get(DcMotor.class, "bR");
 
+        this.imu = imu;
         //this.isStopRequested = isStopRequested;
 
         this.leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -159,17 +164,19 @@ public class MecanumDrive {
     }
 
 	public MecanumDrive calcGryoStabilized(double x, double y, double target) {
-		//PLEASE REPLACE ALL INSTANCES OF GYRO with the proper getAngle() function!
-		if ((target + LockPositionModifier) - GYRO > 360) {
-			LockPositionModifier = LockPositionModifier - 360;
-		}
-		if ((target + LockPositionModifier) - GYRO < -360) {
-			LockPositionModifier = LockPositionModifier + 360;
-		}
-		LockPosition = (target + LockPositionModifier - GYRO);
-		calculateDirectionsRobotCentric(x,y,LockPosition);
-		//see Roman if this doesn't work. He doesn't know how it works either, but he made it.
-
+        //PLEASE REPLACE ALL INSTANCES OF GYRO with the proper getAngle() function!
+        double GYRO = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+        if ((target + LockPositionModifier) - GYRO > 360) {
+            LockPositionModifier = LockPositionModifier - 360;
+        }
+        if ((target + LockPositionModifier) - GYRO < -360) {
+            LockPositionModifier = LockPositionModifier + 360;
+        }
+        LockPosition = (target + LockPositionModifier - GYRO);
+        calculateDirectionsRobotCentric(x, y, LockPosition);
+        //see Roman if this doesn't work. He doesn't know how it works either, but he made it.
+        return this;
+    }
     public MecanumDrive off() {
         flP = 0;
         blP = 0;

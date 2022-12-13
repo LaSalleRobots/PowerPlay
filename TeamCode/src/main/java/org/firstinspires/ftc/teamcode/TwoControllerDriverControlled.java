@@ -65,7 +65,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 r = applyJoystickSmoothing(r, joystickSmoothingExp);
 
                 if (Math.abs(gamepad1.right_stick_x) < 0.05) {
-                    robot.drive.calcGyroStabilized(x, y, Target);
+                    robot.drive.calcGryoStabilized(x, y, Target);
                 }
                 robot.drive.calculateDirections(x, y, r);
 

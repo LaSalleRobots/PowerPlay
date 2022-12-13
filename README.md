@@ -14,7 +14,7 @@ The software stack used in our robot is the following:
 * EasyOpenCV
 * OpenFTC AprilTags
 * Custom Robot Abstractions (Robot, Drivetrain, Mechanisms)
-* Kotlin & Java
+* Java
 * State Machines
 
 

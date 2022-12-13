@@ -6,8 +6,6 @@ package org.firstinspires.ftc.teamcode;
  * Written By Lukas Werner ('22)
  */
 
-import android.hardware.Sensor;
-
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -15,8 +13,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREV2mDistance;
-import org.firstinspires.ftc.robotcore.external.Supplier;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
@@ -162,7 +158,7 @@ public class MecanumDrive {
         return this;
     }
 
-	public MecanumDrive calcGryoStabilized(double x, double y, double target) {
+	public MecanumDrive calcGyroStabilized(double x, double y, double target) {
         double gyroAngle = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
 		if (target - (gyroAngle + gyroModifier) > 180) {
@@ -391,7 +387,7 @@ public class MecanumDrive {
 	
 		// this will stop moving with an acuracy of 2 degrees
 		while (Math.abs(tmpTarget - (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - gyroModifier)) < 2) { 
-			this.calcGryoStabilized(0,0, tmpTarget);
+			this.calcGyroStabilized(0,0, tmpTarget);
         	this.applyPower();
 		}
         return this;
@@ -400,7 +396,7 @@ public class MecanumDrive {
 	public MecanumDrive turnAbsolute(double degree) {
 		// this will stop moving with an acuracy of 2 degrees
 		while (Math.abs(degree - (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - gyroModifier)) < 2) { 
-			this.calcGryoStabilized(0,0, degree);
+			this.calcGyroStabilized(0,0, degree);
         	this.applyPower();
 		}
         return this;

@@ -3,7 +3,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @TeleOp(name="Two-Controller Driver-Controlled")
 public class TwoControllerDriverControlled extends LinearOpMode {
@@ -65,7 +64,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 r = applyJoystickSmoothing(r, joystickSmoothingExp);
 
                 if (Math.abs(gamepad1.right_stick_x) < 0.05) {
-                    robot.drive.calcGryoStabilized(x, y, Target);
+                    robot.drive.calcGyroStabilized(x, y, Target);
                 }
                 robot.drive.calculateDirections(x, y, r);
 

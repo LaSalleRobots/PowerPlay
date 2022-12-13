@@ -394,6 +394,7 @@ public class MecanumDrive {
 			this.calcGryoStabilized(0,0, tmpTarget);
         	this.applyPower();
 		}
+        return this;
 	}
 
 	public MecanumDrive turnAbsolute(double degree) {
@@ -402,6 +403,7 @@ public class MecanumDrive {
 			this.calcGryoStabilized(0,0, degree);
         	this.applyPower();
 		}
+        return this;
 	}
 
     public void rotateRightEncoder(int degree) {

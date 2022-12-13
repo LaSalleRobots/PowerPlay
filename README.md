@@ -26,6 +26,7 @@ The software stack used in our robot is the following:
 * Tetrix Build System
 * Servos 2x
 * Rev touch sensors x2
+* Rev 2m Distance Sensor
 * Custom 3D Printed Parts
 * Logitech C920 Pro
 

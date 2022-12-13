@@ -26,7 +26,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         double gpad2MoveSpeed = 0.0;
         double gpad2RotationSpeed = 0.0;
         double joystickSmoothingExp = 1.6;
-        //negative lift coefficient. Change as needed.
+        //negative lift coefficient to account for backwards lift control. Tune as needed.
         double ManualModeLiftSensitivity = -80;
         target = 0;
 

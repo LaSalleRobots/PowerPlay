@@ -28,6 +28,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         double joystickSmoothingExp = 1.6;
         //negative lift coefficient. Change as needed.
         double ManualModeLiftSensitivity = -80;
+        target = 0;
 
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
 

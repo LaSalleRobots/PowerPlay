@@ -57,7 +57,7 @@ public class MecanumDrive {
 
     private ElapsedTime runtime;
 
-    private IMU imu;
+    public IMU imu;
 
 
     public MecanumDrive(HardwareMap hardwareMap, ElapsedTime runtime, IMU imu) {
@@ -173,10 +173,10 @@ public class MecanumDrive {
 		 */
 
 		if (target - (gyroAngle + gyroModifier) > 0) {
-			calculateDirectionsRobotCentric(x, y, 1); 
+			calculateDirectionsRobotCentric(x, y, (target - (gyroAngle + gyroModifier))/-20);
 		}
 		if (target - (gyroAngle + gyroModifier) < 0) {
-			calculateDirectionsRobotCentric(x, y, -1);
+			calculateDirectionsRobotCentric(x, y, (target - (gyroAngle + gyroModifier))/-20);
 		}
 
         
@@ -386,7 +386,7 @@ public class MecanumDrive {
 		double tmpTarget = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - degrees;
 	
 		// this will stop moving with an acuracy of 2 degrees
-		while (Math.abs(tmpTarget - (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - gyroModifier)) < 2) { 
+		while (Math.abs(tmpTarget - (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES))) < 10) {
 			this.calcGyroStabilized(0,0, tmpTarget);
         	this.applyPower();
 		}

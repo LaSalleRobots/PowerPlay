@@ -164,7 +164,7 @@ public class MecanumDrive {
 		if (target - (gyroAngle + gyroModifier) > 180) {
 			gyroModifier += 360;
         }
-		if (target - (gyroAngle + gyroModifier) < -180) {
+		if (target - (gyroAngle + gyroModifier) < -179) {
 			gyroModifier -= 360;
         }
 
@@ -173,16 +173,25 @@ public class MecanumDrive {
 		 */
 
 		if (target - (gyroAngle + gyroModifier) > 0) {
-			calculateDirectionsRobotCentric(x, y, (target - (gyroAngle + gyroModifier))/-20);
+			calculateDirectionsRobotCentric(x, y, clip((target - (gyroAngle + gyroModifier))/-8));
 		}
 		if (target - (gyroAngle + gyroModifier) < 0) {
-			calculateDirectionsRobotCentric(x, y, (target - (gyroAngle + gyroModifier))/-20);
+			calculateDirectionsRobotCentric(x, y, clip((target - (gyroAngle + gyroModifier))/-8));
 		}
 
         
         //see Roman if this doesn't work. He doesn't know how it works either, but he made it.
         return this;
     }
+
+
+    public double clip(double a) {
+        if (Math.abs(a) < 0.15) {
+            return  (Math.abs(a) / a) * 0.15;
+        }
+        return a;
+    }
+
     public MecanumDrive off() {
         flP = 0;
         blP = 0;
@@ -383,15 +392,20 @@ public class MecanumDrive {
 
 	// This is a RELATIVE turn to the robots current position. Use if you want : turnAbsolute()
 	public MecanumDrive turn(double degrees) {
-		double tmpTarget = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - degrees;
-	
-		// this will stop moving with an acuracy of 2 degrees
-		while (Math.abs(tmpTarget - (imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES))) < 10) {
-			this.calcGyroStabilized(0,0, tmpTarget);
-        	this.applyPower();
-		}
+        double tmpTarget = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - degrees;
+
+        // this will stop moving with an acuracy of 2 degrees
+        while (true) {
+            this.calcGyroStabilized(0,0, tmpTarget);
+            this.applyPower();
+
+
+            if (Math.abs(tmpTarget - (this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES))) < .5 && Math.abs(imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate) < 1) {
+                break;
+            }
+        }
         return this;
-	}
+    }
 
 	public MecanumDrive turnAbsolute(double degree) {
 		// this will stop moving with an acuracy of 2 degrees
@@ -535,7 +549,6 @@ public class MecanumDrive {
 
     public void waitForTargetPosition() {
         while (true) {
-
             if (Math.abs(leftFront.getTargetPosition()-leftFront.getCurrentPosition()) < 10) {break;}
             if (Math.abs(rightFront.getTargetPosition()-rightFront.getCurrentPosition()) < 10) {break;}
             if (Math.abs(leftBack.getTargetPosition()-leftBack.getCurrentPosition()) < 10) {break;}

@@ -35,7 +35,7 @@ public class Robot {
     public Debouncer bumbDebouncer = new Debouncer();
     public Rev2mDistanceSensor poleSensor;
 
-    final double inchesPerBox = 23.3; // 23.3 for meet; 21.5 for school
+    final double inchesPerBox = 21.5; // 23.3 for meet; 21.5 for school
     final double robotLength = 11.75;
     final double robotWidth = 15.25;
     final double robotDistFront  = 8.75;

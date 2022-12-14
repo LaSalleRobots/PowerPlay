@@ -158,6 +158,16 @@ public class MecanumDrive {
         return this;
     }
 
+    public MecanumDrive calcGyroStabalizedV2(double x, double y, double target) {
+        double gyroAngle = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+
+
+        double error = ((target-gyroAngle)%360)-180;
+
+        calculateDirectionsRobotCentric(x, y, clip(error/-5));
+        return this;
+    }
+
 	public MecanumDrive calcGyroStabilized(double x, double y, double target) {
         double gyroAngle = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
@@ -401,6 +411,32 @@ public class MecanumDrive {
 
 
             if (Math.abs(tmpTarget - (this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES))) < .5 && Math.abs(imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate) < 1) {
+                break;
+            }
+        }
+        return this;
+    }
+
+    public MecanumDrive turnPID(double targetAngleDegrees) {
+        PIDController pid = new PIDController(
+               0.01, // Kp
+               0, // Ki
+                0.003, // Kd
+                targetAngleDegrees // our target
+        );
+
+        double tmpTarget = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES)
+                - targetAngleDegrees;
+
+        while (true) {
+            double gyroAngle = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+            double error = ((targetAngleDegrees-gyroAngle)%360)-180; // calculate our error
+
+            double pidVal = pid.update(error);
+            calculateDirectionsRobotCentric(0, 0, pidVal);
+
+            if (Math.abs(tmpTarget - (gyroAngle)) < .5
+                    && Math.abs(imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate) < 1) {
                 break;
             }
         }

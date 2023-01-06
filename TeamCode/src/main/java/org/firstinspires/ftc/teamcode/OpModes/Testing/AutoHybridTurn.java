@@ -38,18 +38,18 @@ public class AutoHybridTurn extends LinearOpMode {
         robot.imu.resetYaw();
 
 
-        int heading = 90;
+        int heading = -90;
 
 
         robot.drive.rotateLeftEncoder(heading);
         robot.sleep(.25);
 
 
-        while(robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - heading < 0.3 || robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - heading > -0.3){
+        while(Math.abs(robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - heading) >= 0.5){
             telemetry.addData("pos:", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.update();
             if(robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) < heading){
-                robot.drive.calculateDirections(0,0,-0.2);
+                robot.drive.calculateDirections(0,0,-0.4);
                 robot.drive.applyPower();
                 //robot.drive.runToPositionIgnoreRight(robot.drive.leftFront.getCurrentPosition() + 10,robot.drive.rightFront.getCurrentPosition() - 10,robot.drive.leftBack.getCurrentPosition() + 10,robot.drive.rightBack.getCurrentPosition() - 10);
             }
@@ -59,7 +59,7 @@ public class AutoHybridTurn extends LinearOpMode {
                     robot.drive.applyPower();
                 }
             if(robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) > heading){
-                robot.drive.calculateDirections(0,0,0.2);
+                robot.drive.calculateDirections(0,0,0.4);
                 robot.drive.applyPower();
             }
             else {

@@ -1,10 +1,8 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-
-import org.firstinspires.ftc.robotcore.external.Supplier;
 
 
 public class Lift {
@@ -84,5 +82,27 @@ public class Lift {
             return 0;
         }
         return ticks;
+    }
+
+    public static class Debouncer {
+        private boolean lock = false;
+
+        public boolean isPressed(boolean input) {
+            if (input) {
+                if (!lock) {
+                    lock = true;
+                    return true;
+                }
+            } else {
+                if (lock) {
+                    lock = false;
+                }
+            }
+            return false;
+        }
+
+        public void reset() {
+            lock = false;
+        }
     }
 }

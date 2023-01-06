@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Hardware;
 
 /* 2021-2022 FTC Robotics Freight-Frenzy
  * (c) 2021-2022 La Salle Robotics
@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Util.PIDController;
 
 public class MecanumDrive {
 
@@ -419,9 +420,9 @@ public class MecanumDrive {
 
     public MecanumDrive turnPID(double targetAngleDegrees) {
         PIDController pid = new PIDController(
-               0.01, // Kp
+               0.002, // Kp
                0, // Ki
-                0.003, // Kd
+                0, // Kd
                 targetAngleDegrees // our target
         );
 
@@ -434,6 +435,8 @@ public class MecanumDrive {
 
             double pidVal = pid.update(error);
             calculateDirectionsRobotCentric(0, 0, pidVal);
+
+            this.applyPower();
 
             if (Math.abs(tmpTarget - (gyroAngle)) < .5
                     && Math.abs(imu.getRobotAngularVelocity(AngleUnit.DEGREES).zRotationRate) < 1) {
@@ -508,6 +511,99 @@ public class MecanumDrive {
         return this;
 
     }
+
+    public MecanumDrive runToPositionIgnoreRight(int LF, int RF, int LB, int RB) {
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        this.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        double p = this.speed;
+        this.leftFront.setPower(p);
+        this.rightFront.setPower(p);
+        this.leftBack.setPower(p);
+        this.rightBack.setPower(p);
+
+        this.leftFront.setTargetPosition(LF);
+        this.rightFront.setTargetPosition(RF);
+        this.leftBack.setTargetPosition(LB);
+        this.rightBack.setTargetPosition(RB);
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
+        waitForTargetPositionIgnoreRight();
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        this.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+
+        this.off();
+        return this;
+
+    }
+
+    public MecanumDrive runToPositionIgnoreLeft(int LF, int RF, int LB, int RB) {
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        this.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        double p = this.speed;
+        this.leftFront.setPower(p);
+        this.rightFront.setPower(p);
+        this.leftBack.setPower(p);
+        this.rightBack.setPower(p);
+
+        this.leftFront.setTargetPosition(LF);
+        this.rightFront.setTargetPosition(RF);
+        this.leftBack.setTargetPosition(LB);
+        this.rightBack.setTargetPosition(RB);
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        //while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
+        waitForTargetPositionIgnoreLeft();
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        this.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+
+        this.off();
+        return this;
+
+    }
+
     public MecanumDrive variableRunToPosition(int LF, int RF, int LB, int RB, double power) {
         this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -585,13 +681,41 @@ public class MecanumDrive {
 
     public void waitForTargetPosition() {
         while (true) {
-            if (Math.abs(leftFront.getTargetPosition()-leftFront.getCurrentPosition()) < 10) {break;}
-            if (Math.abs(rightFront.getTargetPosition()-rightFront.getCurrentPosition()) < 10) {break;}
-            if (Math.abs(leftBack.getTargetPosition()-leftBack.getCurrentPosition()) < 10) {break;}
-            if (Math.abs(rightBack.getTargetPosition()-rightBack.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(leftFront.getTargetPosition() - leftFront.getCurrentPosition()) < 10) {
+                break;
+            }
+            if (Math.abs(rightFront.getTargetPosition() - rightFront.getCurrentPosition()) < 10) {
+                break;
+            }
+            if (Math.abs(leftBack.getTargetPosition() - leftBack.getCurrentPosition()) < 10) {
+                break;
+            }
+            if (Math.abs(rightBack.getTargetPosition() - rightBack.getCurrentPosition()) < 10) {
+                break;
+            }
+        }
+    }
+    public void waitForTargetPositionIgnoreRight() {
+        while (true) {
+            if (Math.abs(leftFront.getTargetPosition() - leftFront.getCurrentPosition()) < 10) {
+                break;
+            }
+            //if (Math.abs(rightFront.getTargetPosition()-rightFront.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(leftBack.getTargetPosition() - leftBack.getCurrentPosition()) < 10) {
+                break;
+            }
+            //if (Math.abs(rightBack.getTargetPosition()-rightBack.getCurrentPosition()) < 10) {break;}
         }
     }
 
+    public void waitForTargetPositionIgnoreLeft() {
+        while (true) {
+            //if (Math.abs(leftFront.getTargetPosition()-leftFront.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(rightFront.getTargetPosition()-rightFront.getCurrentPosition()) < 10) {break;}
+            //if (Math.abs(leftBack.getTargetPosition()-leftBack.getCurrentPosition()) < 10) {break;}
+            if (Math.abs(rightBack.getTargetPosition()-rightBack.getCurrentPosition()) < 10) {break;}
+        }
+    }
 
 }
 

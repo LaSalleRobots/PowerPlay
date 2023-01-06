@@ -1,27 +1,32 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
-@Autonomous(name="Autonomous With Gyro Left")
+@Autonomous(name="Autonomous With Sensor Right")
 
-public class AutoWithGyroLeft extends LinearOpMode {
+public class AutonomousWithSensorRight extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         ElapsedTime time = new ElapsedTime();
 
         Robot robot = new Robot(hardwareMap, time);
+
         robot.drive.speed = 0.35;
+
+
 
         Vision vision = new Vision(hardwareMap);
 
         final double inchesPerBox = robot.inchesPerBox;
         final double robotLength = robot.robotLength;
-        final int directionCoefficient = 1;
+        final int directionCoefficient = -1;
         // -1 means right
+
 
         int id = 3;
 
@@ -69,8 +74,8 @@ public class AutoWithGyroLeft extends LinearOpMode {
         robot.drive.forward().variableGoDist(inchesPerBox * 1.9, .35);
         robot.sleep(0.25);
 
-        robot.drive.turn(- 90 * directionCoefficient);
-        robot.sleep(.25);
+        robot.drive.rotateLeftEncoder(90 * directionCoefficient);
+        robot.sleep(0.25);
 
         robot.drive.forward().goDist(inchesPerBox * 2.2);
         robot.drive.startSlowMode(0.5);
@@ -97,7 +102,7 @@ public class AutoWithGyroLeft extends LinearOpMode {
         robot.drive.backward().goDist(inchesPerBox * 1);
         robot.sleep(0.25);
 
-        robot.drive.turn(90 * directionCoefficient);
+        robot.drive.rotateRightEncoder(90 * directionCoefficient);
         robot.sleep(0.25);
 
         robot.drive.right().goDist((inchesPerBox * .95 - robot.robotDistFront) * directionCoefficient);
@@ -119,19 +124,8 @@ public class AutoWithGyroLeft extends LinearOpMode {
         robot.sleep(0.1);
 
         robot.drive.left().goDist(inchesPerBox * (2 + (directionCoefficient/2.0) -(Math.abs(id))));
-        // this is for left only
 
+        // this is for right only
 
-
-
-        /*
-        while (Math.abs(tmpTarget - (robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES))) > 2) {
-            telemetry.addData("tmpTarget", tmpTarget);
-            telemetry.addData("goal:", Math.abs(tmpTarget - (robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES))));
-            telemetry.update();
-            robot.drive.calcGyroStabilized(0,0, tmpTarget);
-            robot.drive.applyPower();
-        }
-        */
     }
 }

@@ -74,6 +74,8 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 y = applyJoystickSmoothing(y, joystickSmoothingExp);
                 r = applyJoystickSmoothing(r, joystickSmoothingExp);
 
+
+
                 //Applies calculated movement for both field-centric and not
                 if (fieldCentric) {
                     //robot.getHeading() may be partially or not at all functional. Good luck, traveler.

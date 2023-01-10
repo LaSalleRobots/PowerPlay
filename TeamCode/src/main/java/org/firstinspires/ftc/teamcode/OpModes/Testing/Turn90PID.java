@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
 @Autonomous(name="PID Testing 90 Degree")
+@Disabled
 
 public class Turn90PID extends LinearOpMode {
     @Override
@@ -22,7 +24,7 @@ public class Turn90PID extends LinearOpMode {
         robot.drive.turnPID(90);
     }
 
-    @Autonomous(name="Autonomous With Gyro Left")
+
 
     public static class AutoWithGyroLeft extends LinearOpMode {
         @Override
@@ -89,11 +91,11 @@ public class Turn90PID extends LinearOpMode {
             robot.sleep(.25);
 
             robot.drive.forward().goDist(inchesPerBox * 2.2);
-            robot.drive.startSlowMode(0.5);
+            robot.drive.variableSpeedMode(0.5);
             telemetry.addData("mode", "started");
             telemetry.update();
             robot.drive.forward().goFor(0.75);
-            robot.drive.endSlowMode();
+            robot.drive.endVariableSpeedMode();
             telemetry.addData("mode", "ended");
             telemetry.update();
 

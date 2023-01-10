@@ -26,6 +26,8 @@ public class MecanumDrive {
 
     static final double TICKS_PER_INCH = 40.88721;
 
+    static final double POLE_SENSOR_TRIGGER_DISTANCE_CM = 15;
+
     final double ticksPerDegree = 700 / 90.0;
 
     //front left
@@ -171,26 +173,7 @@ public class MecanumDrive {
 
 	public MecanumDrive calcGyroStabilized(double x, double y, double target) {
         double gyroAngle = this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
-		if (target - (gyroAngle + gyroModifier) > 180) {
-			gyroModifier += 360;
-        }
-		if (target - (gyroAngle + gyroModifier) < -179) {
-			gyroModifier -= 360;
-        }
-
-		/*
-		 * This 1 and -1 should probably be variable as we get closer to our targets.
-		 */
-
-		if (target - (gyroAngle + gyroModifier) > 0) {
-			calculateDirectionsRobotCentric(x, y, clip((target - (gyroAngle + gyroModifier))/-8));
-		}
-		if (target - (gyroAngle + gyroModifier) < 0) {
-			calculateDirectionsRobotCentric(x, y, clip((target - (gyroAngle + gyroModifier))/-8));
-		}
-
-        
+        calculateDirectionsRobotCentric(x, y, clip((((target-gyroAngle)%360)-180)/-20));
         //see Roman if this doesn't work. He doesn't know how it works either, but he made it.
         return this;
     }
@@ -324,7 +307,7 @@ public class MecanumDrive {
         //while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
         while (true) {
 
-            if (sensor.getDistance(DistanceUnit.CM) < 10) {
+            if (sensor.getDistance(DistanceUnit.CM) < POLE_SENSOR_TRIGGER_DISTANCE_CM) {
 
                 int lb = leftBack.getCurrentPosition();
                 int rb = rightBack.getCurrentPosition();
@@ -390,13 +373,13 @@ public class MecanumDrive {
         return this;
     }
 
-    public MecanumDrive startSlowMode(double speed) {
+    public MecanumDrive variableSpeedMode(double speed) {
         this.oldSpeed = this.speed;
         this.speed = speed;
         return this;
     }
 
-    public MecanumDrive endSlowMode() {
+    public MecanumDrive endVariableSpeedMode() {
         this.speed = this.oldSpeed;
         return this;
     }
@@ -464,6 +447,44 @@ public class MecanumDrive {
     public void rotateLeftEncoder(int degree) {
         //this.runToPosition(-(int) (degree * ticksPerDegree), (int) (degree * ticksPerDegree), -(int) (degree * ticksPerDegree), (int) (degree * ticksPerDegree));
         this.runToPosition(-(int) (degree * 698/90.0), (int) (degree * 629/90.0), -(int) (degree * 611/90.0), (int) (degree * 732/90.0));
+    }
+
+    public void rotateGyro(int degree, int heading){
+
+        ElapsedTime time = new ElapsedTime();
+
+        this.rotateLeftEncoder(degree);
+        this.sleep(.25);
+
+        while(Math.abs(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) - heading) >= 0.5) {
+            //this.calculateDirectionsRobotCentric(0, 0, clip((((heading-this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES))%360)-180))/-20);
+            //this.applyPower();
+
+            if (time.milliseconds() > 2000) {
+                break;
+            }
+
+            if (this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) < heading) {
+                this.calculateDirections(0, 0, -0.45);
+                this.applyPower();
+            } else {
+                if (!(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) > heading)) {
+                    this.calculateDirections(0, 0, 0);
+                    this.applyPower();
+                }
+                if (this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) > heading) {
+                    this.calculateDirections(0, 0, 0.45);
+                    this.applyPower();
+                } else {
+                    if (!(this.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES) < heading)) {
+                        this.calculateDirections(0, 0, 0);
+                        this.applyPower();
+                    }
+                    this.calculateDirections(0, 0, 0);
+                    this.applyPower();
+                }
+            }
+        }
     }
 
     public MecanumDrive runToPosition(int LF, int RF, int LB, int RB) {

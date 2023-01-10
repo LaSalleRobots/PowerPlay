@@ -1,13 +1,15 @@
 package org.firstinspires.ftc.teamcode.OpModes.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
-
-@Autonomous
+@Autonomous(name = "AutoRevisedRoman.")
+@Disabled
 public class AutoRevisedRoman extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

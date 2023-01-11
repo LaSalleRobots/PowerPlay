@@ -1,10 +1,20 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModes.Testing;
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Hardware.Grabber;
+import org.firstinspires.ftc.teamcode.Hardware.Lift;
+import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
 @TeleOp(name = "Read Lift Position")
+@Disabled
 public class ReadLiftEncoder extends LinearOpMode {
 
 
@@ -12,12 +22,12 @@ public class ReadLiftEncoder extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Lift lift = new Lift(hardwareMap);
         Grabber grabber = new Grabber(hardwareMap);
-        Debouncer db = new Debouncer();
+        Lift.Debouncer db = new Lift.Debouncer();
         waitForStart();
 
         grabber.left.setPosition(0);
 
-        while (opModeIsActive() ) {
+        while (opModeIsActive()) {
             telemetry.addData("ls", grabber.left.getPosition());
             telemetry.addData("rs", grabber.right.getPosition());
             telemetry.addData("Lift Position", lift.getPosition());

@@ -10,11 +10,11 @@ The 2022-2023 season of the First Tech Challenge. This year's goal is to place c
 ## Software Stack
 
 The software stack used in our robot is the following:
-* 8.0 SDK
+* 8.1.1 SDK
 * EasyOpenCV
 * OpenFTC AprilTags
 * Custom Robot Abstractions (Robot, Drivetrain, Mechanisms)
-* Kotlin & Java
+* Java
 * State Machines
 
 
@@ -26,6 +26,7 @@ The software stack used in our robot is the following:
 * Tetrix Build System
 * Servos 2x
 * Rev touch sensors x2
+* Rev 2m Distance Sensor
 * Custom 3D Printed Parts
 * Logitech C920 Pro
 

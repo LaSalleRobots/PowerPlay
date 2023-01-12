@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Hardware;
 
 /* 2019-2022 FTC Robotics Freight-Frenzy
  * (c) 2019-2022 La Salle Robotics
@@ -6,22 +6,19 @@ package org.firstinspires.ftc.teamcode;
  * Written By Lukas Werner ('22)
  */
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.Supplier;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.Util.Debouncer;
 
 public class Robot {
 
@@ -32,13 +29,13 @@ public class Robot {
     public Lift lift;
     public Grabber grabber;
     public TouchSensor bumpSensorLeft, bumpSensorRight;
-    public Debouncer bumbDebouncer = new Debouncer();
+    public Debouncer bumpDebouncer = new Debouncer();
     public Rev2mDistanceSensor poleSensor;
 
-    final double inchesPerBox = 21.5; // 23.3 for meet; 21.5 for school
-    final double robotLength = 11.75;
+    public double inchesPerBox = 23.3; // 23.3 for meet; 21.5 for school
+    public final double robotLength = 11.75;
     final double robotWidth = 15.25;
-    final double robotDistFront  = 8.75;
+    public final double robotDistFront  = 8.75;
     final double robotDistBack = 5.75;
 
 
@@ -105,8 +102,10 @@ public class Robot {
     }
 
     public boolean bumperPressed() {
-        return bumbDebouncer.isPressed(bumpSensorLeft.isPressed() && bumpSensorRight.isPressed());
+        return bumpDebouncer.isPressed(bumpSensorLeft.isPressed() && bumpSensorRight.isPressed());
     }
+
+
 
     public Robot deliver(int poleHeight) {
         //drive.recordPosition();

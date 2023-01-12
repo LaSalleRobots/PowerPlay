@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Hardware;
 
 /* 2020-2021 FTC Robotics Freight-Frenzy
  * (c) 2020-2021 La Salle Robotics

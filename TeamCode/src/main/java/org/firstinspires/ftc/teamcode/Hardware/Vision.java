@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Hardware;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -9,9 +9,12 @@ import java.util.ArrayList;
 public class Vision {
     private OpenCVPipelineRunner runner;
     private AprilTagDetectionPipeline pipeline;
+    private PoleCenterDetection poleCenterDetection;
 
     public Vision(HardwareMap hardwareMap) {
         pipeline = new AprilTagDetectionPipeline();
+        poleCenterDetection = new PoleCenterDetection();
+
         runner = new OpenCVPipelineRunner(hardwareMap, pipeline);
         runner.start();
     }
@@ -24,6 +27,13 @@ public class Vision {
         return detections.get(0).id;
     }
 
+    public void switchToPolesMode() {
+        runner.setPipeline(poleCenterDetection);
+    }
+
+    public double getPolePosition() {
+        return poleCenterDetection.POLE_Y;
+    }
 }
 
 

@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Hardware.Lift;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Util.Debouncer;
 
 @TeleOp(name="Two-Controller Driver-Controlled")
 public class TwoControllerDriverControlled extends LinearOpMode {
@@ -17,10 +17,10 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         double x, y, r, target, targetAngle;
 
         // Debouncers
-        Lift.Debouncer dx = new Lift.Debouncer(),
-                bumper = new Lift.Debouncer(),
-                clawdebouncer = new Lift.Debouncer(),
-                turnAroundDebouncer = new Lift.Debouncer();
+        Debouncer dx = new Debouncer(),
+                bumper = new Debouncer(),
+                clawdebouncer = new Debouncer(),
+                turnAroundDebouncer = new Debouncer();
 
         boolean fieldCentric = false;
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
@@ -39,9 +39,13 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         double ManualModeLiftSensitivity = -80;
 
         waitForStart();
+        time.reset();
         robot.lift.setPositionAsync(0);
 
         while (true) {
+
+            /* if (time.seconds() > 89) {
+                robot.grabber.open(); } */
 
             if (!opModeIsActive()) {break;}
             telemetry.update();
@@ -56,18 +60,24 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             telemetry.addData("Back Right", robot.drive.rightBack.getCurrentPosition());
             telemetry.addData("Back Left", robot.drive.leftBack.getCurrentPosition());
 
+
             //Movement section
             {
                 //Prematurely combining movement values for both slow mode and non-slow mode
-                if (gamepad1.right_bumper) { //slow mode
-                    x = (0.75 * gpad1MoveSpeed * gamepad1.left_stick_x);
-                    y = (0.75 * gpad1MoveSpeed * gamepad1.left_stick_y);
-                    r = (0.75 * gpad1RotationSpeed * gamepad1.right_stick_x);
+                if (gamepad1.left_bumper) { // Slow Mode
+                    x = (0.65 * gpad1MoveSpeed * gamepad1.left_stick_x);
+                    y = (0.65 * gpad1MoveSpeed * gamepad1.left_stick_y);
+                    r = (0.65 * gpad1RotationSpeed * gamepad1.right_stick_x);
                 }
-                else { //normal mode. Dual-gamepad control functionality is implemented here, but currently dormant.
-                    x = ((gpad1MoveSpeed * gamepad1.left_stick_x) + (gpad2MoveSpeed * gamepad2.left_stick_x));
-                    y = ((gpad1MoveSpeed * gamepad1.left_stick_y) + (gpad2MoveSpeed * gamepad2.left_stick_y));
-                    r = ((gpad1RotationSpeed * gamepad1.right_stick_x) + (gpad2RotationSpeed * gamepad2.right_stick_x));
+                else if (gamepad1.right_bumper) {  // Boost
+                    x = ((1.75 * gpad1MoveSpeed * gamepad1.left_stick_x));
+                    y = ((1.75 * gpad1MoveSpeed * gamepad1.left_stick_y));
+                    r = ((1.75 * gpad1RotationSpeed * gamepad1.right_stick_x));
+                }
+                else { // Normal mode
+                    x = (.9 * gpad1MoveSpeed * gamepad1.left_stick_x);
+                    y = (.9 * gpad1MoveSpeed * gamepad1.left_stick_y);
+                    r = (.9 * gpad1RotationSpeed * gamepad1.right_stick_x);
                 }
 
                 x = applyJoystickSmoothing(x, joystickSmoothingExp);
@@ -176,14 +186,14 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
             if (robot.bumperPressed()) {
                 robot.grabber.close();
-                robot.sleep(.5);
-                robot.lift.setPosition(robot.lift.getPosition()+500);
+                robot.sleep(.25);
+                robot.lift.setPosition(robot.lift.getPosition() + 500);
                 robot.sleep(.1);
-                robot.drive.backward().goFor(0.5);
+                robot.drive.backward().goDist(0.3 * robot.inchesPerBox);
                 robot.sleep(.1);
-
-
             }
+
+
 
 
             if (!opModeIsActive()) {break;}

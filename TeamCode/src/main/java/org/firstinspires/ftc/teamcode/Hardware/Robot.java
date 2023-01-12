@@ -18,6 +18,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.Util.Debouncer;
 
 public class Robot {
 
@@ -28,7 +29,7 @@ public class Robot {
     public Lift lift;
     public Grabber grabber;
     public TouchSensor bumpSensorLeft, bumpSensorRight;
-    public Lift.Debouncer bumbDebouncer = new Lift.Debouncer();
+    public Debouncer bumpDebouncer = new Debouncer();
     public Rev2mDistanceSensor poleSensor;
 
     public double inchesPerBox = 23.3; // 23.3 for meet; 21.5 for school
@@ -101,8 +102,10 @@ public class Robot {
     }
 
     public boolean bumperPressed() {
-        return bumbDebouncer.isPressed(bumpSensorLeft.isPressed() && bumpSensorRight.isPressed());
+        return bumpDebouncer.isPressed(bumpSensorLeft.isPressed() && bumpSensorRight.isPressed());
     }
+
+
 
     public Robot deliver(int poleHeight) {
         //drive.recordPosition();

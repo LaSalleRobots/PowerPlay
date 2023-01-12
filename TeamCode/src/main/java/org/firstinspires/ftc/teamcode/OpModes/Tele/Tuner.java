@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware.Lift;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Util.Debouncer;
 import org.firstinspires.ftc.teamcode.Util.PIDController;
 
 @TeleOp
@@ -20,7 +21,7 @@ public class Tuner extends LinearOpMode {
         double tuningVariable = 0.0000001;
         double targetAngleDegrees = 0;
 
-        Lift.Debouncer db = new Lift.Debouncer();
+        Debouncer db = new Debouncer();
 
         waitForStart();
 

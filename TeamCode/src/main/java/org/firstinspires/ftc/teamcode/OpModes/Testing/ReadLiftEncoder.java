@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Grabber;
 import org.firstinspires.ftc.teamcode.Hardware.Lift;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
+import org.firstinspires.ftc.teamcode.Util.Debouncer;
 
 @TeleOp(name = "Read Lift Position")
 @Disabled
@@ -22,7 +23,7 @@ public class ReadLiftEncoder extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Lift lift = new Lift(hardwareMap);
         Grabber grabber = new Grabber(hardwareMap);
-        Lift.Debouncer db = new Lift.Debouncer();
+        Debouncer db = new Debouncer();
         waitForStart();
 
         grabber.left.setPosition(0);

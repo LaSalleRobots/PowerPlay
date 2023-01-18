@@ -487,6 +487,7 @@ public class MecanumDrive {
                 }
             }
         }
+        this.off();
     }
 
     public MecanumDrive runToPosition(int LF, int RF, int LB, int RB) {

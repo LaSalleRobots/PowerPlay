@@ -9,11 +9,12 @@ import java.util.ArrayList;
 public class Vision {
     private OpenCVPipelineRunner runner;
     private AprilTagDetectionPipeline pipeline;
-    private PoleCenterDetection poleCenterDetection;
+    private YellowCylinderDetector poleCenterDetection;
 
     public Vision(HardwareMap hardwareMap) {
         pipeline = new AprilTagDetectionPipeline();
-        poleCenterDetection = new PoleCenterDetection();
+//        poleCenterDetection = new PoleCenterDetection();
+        poleCenterDetection = new YellowCylinderDetector();
 
         runner = new OpenCVPipelineRunner(hardwareMap, pipeline);
         runner.start();

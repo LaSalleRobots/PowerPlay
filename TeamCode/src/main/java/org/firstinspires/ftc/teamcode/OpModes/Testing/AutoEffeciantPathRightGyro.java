@@ -18,8 +18,6 @@ public class AutoEffeciantPathRightGyro extends LinearOpMode {
         Robot robot = new Robot(hardwareMap, time);
         robot.drive.speed = 0.35;
 
-        Vision vision = new Vision(hardwareMap);
-
         final double inchesPerBox = robot.inchesPerBox;
         final double robotLength = robot.robotLength;
         final int directionCoefficient = -1;
@@ -28,7 +26,7 @@ public class AutoEffeciantPathRightGyro extends LinearOpMode {
         int id = 3;
 
         while (opModeInInit()) {
-            id = vision.getIdentifier();
+            id = robot.vision.getIdentifier();
             telemetry.addData("Id:", id);
             telemetry.addData("pos:", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
             telemetry.update();

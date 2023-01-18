@@ -32,8 +32,8 @@ public class PoleCenterDetection extends OpenCvPipeline {
 
 
     private Mat blur = new Mat();
-    private Mat ycrcbMat       = new Mat();
-    private Mat binaryMat      = new Mat();
+    private Mat mat       = new Mat();
+    private Mat thresh      = new Mat();
     private Mat maskedInputMat = new Mat();
     private final Mat edges = new Mat();
 
@@ -67,9 +67,9 @@ public class PoleCenterDetection extends OpenCvPipeline {
          * Takes our "input" mat as an input, and outputs
          * to a separate Mat buffer "ycrcbMat"
          */
-        Imgproc.cvtColor(input, ycrcbMat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
-        Imgproc.blur(ycrcbMat, ycrcbMat, blurr);
+        Imgproc.blur(mat, mat, blurr);
 
         /*
          * This is where our thresholding actually happens.
@@ -85,7 +85,7 @@ public class PoleCenterDetection extends OpenCvPipeline {
          * 0 represents our pixels that were outside the bounds
          * 255 represents our pixels that are inside the bounds
          */
-        Core.inRange(ycrcbMat, lower, upper, binaryMat);
+        Core.inRange(mat, lower, upper, thresh);
 
         /*
          * Release the reusable Mat so that old data doesn't
@@ -101,7 +101,8 @@ public class PoleCenterDetection extends OpenCvPipeline {
          * the range) and will discard any other pixel outside the
          * range (RGB 0, 0, 0. All discarded pixels will be black)
          */
-        Core.bitwise_and(input, input, maskedInputMat, binaryMat);
+
+        Core.bitwise_and(input, input, maskedInputMat, thresh);
 
         /**
          * Add some nice and informative telemetry messages
@@ -124,7 +125,7 @@ public class PoleCenterDetection extends OpenCvPipeline {
 
 
 
-        Imgproc.Canny(binaryMat, edges, cannyThresh.val[0], cannyThresh.val[1]);
+        Imgproc.Canny(thresh, edges, cannyThresh.val[0], cannyThresh.val[1]);
         Imgproc.findContours(edges, contors, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
 
         for (MatOfPoint point: contors) {
@@ -172,7 +173,7 @@ public class PoleCenterDetection extends OpenCvPipeline {
             //Imgproc.putText(maskedInputMat, "id: 0", bounds.boundingRect().tl(), 0, 0.5, new Scalar(0, 255, 0));
         }*/
 
-        return maskedInputMat;
+        return input;
     }
 
 

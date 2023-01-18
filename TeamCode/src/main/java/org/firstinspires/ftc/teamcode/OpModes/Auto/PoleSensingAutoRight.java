@@ -14,9 +14,10 @@ public class PoleSensingAutoRight extends LinearOpMode {
         ElapsedTime time = new ElapsedTime();
 
         Robot robot = new Robot(hardwareMap, time);
+        robot.vision.switchToPolesMode();
         robot.drive.speed = 0.35;
 
-        Vision vision = new Vision(hardwareMap);
+        robot.drive.variableSpeedMode(0.65);
 
         final double inchesPerBox = robot.inchesPerBox;
         final double robotLength = robot.robotLength;
@@ -26,7 +27,7 @@ public class PoleSensingAutoRight extends LinearOpMode {
         int id = 3;
 
         while (opModeInInit()) {
-            id = vision.getIdentifier();
+            id = robot.vision.getIdentifier();
             telemetry.addData("Id:", id);
             telemetry.update();
         }
@@ -35,8 +36,23 @@ public class PoleSensingAutoRight extends LinearOpMode {
 
         waitForStart();
 
-        vision.switchToPolesMode();
+        robot.grabber.close();
+        robot.sleep(0.25);
 
-        robot.drive.forward().goDist(inchesPerBox - robotLength);
+        robot.lift.setPosition(robot.lift.LARGE);
+
+        robot.drive.forward().goDist(2.1 * inchesPerBox);
+
+
+//        robot.drive.rotateGyro(45, 45);
+
+        robot.drive.rotateLeftEncoder(45);
+
+        robot.poleHarmonization(telemetry);
+        robot.drive.interruptableGoDist(0.4 * inchesPerBox, robot.poleSensor);
+
+        robot.grabber.open();
+        robot.drive.backward().goDist(.5 * inchesPerBox);
+        //robot.drive.interruptableGoDist(0.5 * inchesPerBox, robot.poleSensor);
     }
 }

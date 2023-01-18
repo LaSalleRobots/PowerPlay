@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -31,6 +32,7 @@ public class Robot {
     public TouchSensor bumpSensorLeft, bumpSensorRight;
     public Debouncer bumpDebouncer = new Debouncer();
     public Rev2mDistanceSensor poleSensor;
+    public Vision vision;
 
     public double inchesPerBox = 23.3; // 23.3 for meet; 21.5 for school
     public final double robotLength = 11.75;
@@ -63,6 +65,8 @@ public class Robot {
         this.bumpSensorLeft = hardwareMap.get(TouchSensor.class, "bumpLeft");
         this.bumpSensorRight = hardwareMap.get(TouchSensor.class, "bumpRight");
         this.poleSensor = hardwareMap.get(Rev2mDistanceSensor.class, "Pole");
+        this.vision = new Vision(hardwareMap);
+
         //this.isStopRequested = isStopRequested;
 
 
@@ -105,7 +109,24 @@ public class Robot {
         return bumpDebouncer.isPressed(bumpSensorLeft.isPressed() && bumpSensorRight.isPressed());
     }
 
+    public Robot poleHarmonization(Telemetry t) {
+        double offset = this.vision.getPolePosition() - 70;
 
+        while (Math.abs(offset) >= 5) {
+            this.drive.calculateDirectionsRobotCentric(0, 0, (offset / Math.abs(offset)) * 0.5);
+            t.addData("offset", offset);
+            t.update();
+
+            this.drive.applyPower();
+
+            offset = this.vision.getPolePosition() - 70;
+        }
+        t.addData("offset", offset);
+        t.update();
+        this.drive.off();
+
+        return this;
+    }
 
     public Robot deliver(int poleHeight) {
         //drive.recordPosition();

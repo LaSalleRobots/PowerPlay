@@ -26,24 +26,12 @@ public class YellowCylinderDetector extends OpenCvPipeline {
      * min and max values here for now, meaning
      * that all pixels will be shown.
      */
-    public Scalar lower = new Scalar(0, 0, 0);
-    public Scalar upper = new Scalar(255, 255, 99.2);
-    public Scalar cannyThresh = new Scalar(200, 255);
-    public Size blurr = new Size(4.0, 4.0);
     ArrayList<double[]> frameList;
     //these are public static to be tuned in dashboard
     public static double strictLowS = 123;
     public static double strictHighS = 218;
-
-
-    private Mat displayMat            = new Mat();
-
     private ArrayList<RotatedRect> boundingBoxes = new ArrayList<>();
-    private ArrayList<RotatedRect> boundingBoxesClean = new ArrayList<>();
-    private final MatOfPoint2f largestContour2f = new MatOfPoint2f();
-    public RotatedRect holyBox = new RotatedRect();
     private final MatOfPoint2f mp2f = new MatOfPoint2f();
-    RotatedRect selected = new RotatedRect();
 
     public double POLE_Y = 0;
 
@@ -141,6 +129,7 @@ public class YellowCylinderDetector extends OpenCvPipeline {
         edges.release();
         thresh.release();
         finalMask.release();
+        hierarchy.release();
         //change the return to whatever mat you want
         //for example, if I want to look at the lenient thresh:
         // return thresh;
@@ -151,7 +140,7 @@ public class YellowCylinderDetector extends OpenCvPipeline {
         /*for (RotatedRect bbox: boundingBoxes) {
             Imgproc.rectangle(displayMat, bbox.boundingRect(), new Scalar(255, 0, 0));
         }*/
-        Imgproc.putText(input, "d: "+ boundingBoxes.size(), new Point(240, 240), 0, 2, new Scalar(0, 255, 0));
+        //Imgproc.putText(input, "d: "+ boundingBoxes.size(), new Point(240, 240), 0, 2, new Scalar(0, 255, 0));
         return input;
     }
 }

@@ -114,29 +114,38 @@ public class Robot {
 
         while (Math.abs(offset) >= 5) {
             this.drive.calculateDirectionsRobotCentric(0, 0, (offset / Math.abs(offset)) * 0.5);
+            this.drive.applyPower();
+
             t.addData("offset", offset);
             t.update();
 
-            this.drive.applyPower();
-
             offset = this.vision.getPolePosition() - 70;
         }
+
         t.addData("offset", offset);
         t.update();
-        this.drive.off();
+
+        //this.drive.off();
+
+        //
+        this.drive.calculateDirectionsRobotCentric(0, 0, 0);
+        this.drive.calculateDirections(0, 0, 0);
+        this.drive.applyPower();
 
         return this;
     }
 
-    public Robot deliver(int poleHeight) {
-        //drive.recordPosition();
-        lift.setPosition(poleHeight);
-        drive.interruptableGoDist(inchesPerBox * 0.25, poleSensor);
-        sleep(0.5);
-        grabber.open();
-        //drive.restorePosition();
-        grabber.close();
-        lift.setPosition(0);
+    public Robot deliver() {
+        this.drive.forward().interruptableGoDist(inchesPerBox * .3, this.poleSensor);
+        this.sleep(0.1);
+
+        this.lift.setPosition(this.lift.getPosition() - 220);
+        this.sleep(.1);
+
+        this.grabber.open();
+        this.sleep(0.2);
+
+        this.drive.backward().goDist(inchesPerBox * .3);
 
         return this;
     }

@@ -8,15 +8,11 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class Lift {
     private DcMotor liftMotor;
 
-    private int TOP_LIMIT = 3010;
-
-    final public int LARGE = TOP_LIMIT;
+    final public int LARGE = 2985;
     final public int MIDDLE = 2120;
     final public int SMALL = 1250;
 
     final public  int GROUND_JUNCTION = 720;
-
-    //public Supplier<Boolean> isStopRequested;
 
     final public int FIVE_STACK = 500;
     final public int FOUR_STACK = 400;
@@ -31,8 +27,6 @@ public class Lift {
         liftMotor.setPower(1);
         liftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        //this.isStopRequested = isStopRequested;
 
     }
 
@@ -76,8 +70,8 @@ public class Lift {
     }
 
     public int bound(int ticks) {
-        if (ticks > TOP_LIMIT) {
-            return TOP_LIMIT;
+        if (ticks > LARGE) {
+            return LARGE;
         } else if (ticks < 0) {
             return 0;
         }

@@ -275,9 +275,6 @@ public class MecanumDrive {
 
 
     public MecanumDrive interruptableGoDist(double runningDistance, Rev2mDistanceSensor sensor) {
-
-
-
         // clip the powers to -1 and 1
         int flD = 1; if (flP < 0) {flD=-1;}
         int frD = 1; if (frP < 0) {frD=-1;}
@@ -796,10 +793,10 @@ public class MecanumDrive {
             if (Math.abs(rightBack.getTargetPosition() - rightBack.getCurrentPosition()) < 10) {
                 break;
             }
-            this.leftFront.setPower( -.65 * ((double)this.leftFront.getCurrentPosition()/this.leftFront.getTargetPosition()) + 1);
-            this.leftBack.setPower( -.65 * ((double)this.leftBack.getCurrentPosition()/this.leftBack.getTargetPosition()) + 1);
-            this.rightFront.setPower( -.65 * ((double)this.rightFront.getCurrentPosition()/this.rightFront.getTargetPosition()) + 1);
-            this.rightBack.setPower( -.65 * ((double)this.rightBack.getCurrentPosition()/this.rightBack.getTargetPosition()) + 1);
+            this.leftFront.setPower( -.45 * ((double)this.leftFront.getCurrentPosition()/this.leftFront.getTargetPosition()) + .8);
+            this.leftBack.setPower( -.45 * ((double)this.leftBack.getCurrentPosition()/this.leftBack.getTargetPosition()) + .8);
+            this.rightFront.setPower( -.45 * ((double)this.rightFront.getCurrentPosition()/this.rightFront.getTargetPosition()) + .8);
+            this.rightBack.setPower( -.45 * ((double)this.rightBack.getCurrentPosition()/this.rightBack.getTargetPosition()) + .8);
         }
     }
     public void waitForTargetPositionIgnoreRight() {

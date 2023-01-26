@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
-@Autonomous(name = "AutoRevisedRoman.")
+@Autonomous(name = "AutoRevisedRoman.", group = "Testing")
 @Disabled
 public class AutoRevisedRoman extends LinearOpMode {
     @Override

@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
-@Autonomous(name = "AutonomousEncoderTest")
+@Autonomous(name = "AutonomousEncoderTest", group = "Testing")
 @Disabled
 public class AutoEncoderTest extends LinearOpMode {
     @Override

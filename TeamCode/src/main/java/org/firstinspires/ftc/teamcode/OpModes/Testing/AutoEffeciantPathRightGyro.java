@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
-@Autonomous(name = "AutoEfficientRightGyro")
+@Autonomous(name = "AutoEfficientRightGyro", group = "Testing")
 public class AutoEffeciantPathRightGyro extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

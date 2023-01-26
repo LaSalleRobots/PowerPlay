@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
-@Autonomous
+@Autonomous(group = "Testing")
 public class AutoPoleSensingRight extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -15,9 +15,7 @@ public class AutoPoleSensingRight extends LinearOpMode {
 
         Robot robot = new Robot(hardwareMap, time);
 
-        //robot.drive.speed = 0.35;
-
-        robot.drive.speed = 0.45;
+        robot.drive.speed = 0.55;
 
         final double inchesPerBox = robot.inchesPerBox;
         final double robotLength = robot.robotLength;
@@ -42,7 +40,7 @@ public class AutoPoleSensingRight extends LinearOpMode {
         robot.grabber.close();
         robot.sleep(0.25);
 
-        robot.lift.setPosition(robot.lift.FIVE_STACK);
+        robot.lift.setPositionAsync(robot.lift.FIVE_STACK);
 
         robot.drive.forward().goDist(.1);
 
@@ -50,38 +48,42 @@ public class AutoPoleSensingRight extends LinearOpMode {
 
         robot.drive.left().goDist(1 * inchesPerBox);
 
-        robot.sleep(.05);
+        robot.sleep(.25);
 
-        robot.drive.forward().goDistSmooth(2.7 * inchesPerBox - robotLength);
+        robot.lift.setPositionAsync(robot.lift.LARGE);
 
-        robot.sleep(.05);
+        robot.drive.speed = 0.75;
+
+        robot.drive.forward().goDistSmooth(2.15 * inchesPerBox);
+
+        robot.sleep(.25);
+
+        robot.drive.speed = .35;
 
         robot.drive.rotateRightEncoder(45);
 
-        robot.sleep(.05);
-
-        robot.lift.setPosition(robot.lift.LARGE);
-
-        robot.drive.speed = .35;
         robot.poleHarmonization(telemetry);
 
         robot.sleep(.05);
 
-        robot.drive.forward().goDist(.2 * inchesPerBox);
+        robot.drive.speed = .45;
 
-        robot.sleep(.05);
+        robot.drive.forward().goDist(.25 * inchesPerBox);
+
+        robot.sleep(0.05);
 
         robot.deliver();
 
         robot.sleep(.05);
 
-        robot.drive.backward().goDist(.3 * inchesPerBox);
+        robot.drive.backward().goDist(.25 * inchesPerBox);
 
         robot.sleep(.05);
+        robot.drive.speed = .55;
 
         robot.drive.rotateGyro(-45, -90);
 
-        robot.sleep(.05);
+        robot.sleep(.2);
 
         robot.lift.setPositionAsync(robot.lift.FIVE_STACK);
 
@@ -91,11 +93,13 @@ public class AutoPoleSensingRight extends LinearOpMode {
 
         robot.sleep(.05);
 
-        int ITERATIONS = 3;
-        for (int i = 0; i < ITERATIONS; i++) {
-            robot.lift.setPosition(robot.lift.FIVE_STACK -i *  100);
+        robot.drive.speed = .3;
 
-            robot.drive.forward().goDist(.5 * inchesPerBox);
+        int ITERATIONS = 1;
+        for (int i = 0; i < ITERATIONS; i++) {
+            robot.lift.setPosition(robot.lift.FIVE_STACK -i *  150);
+
+            robot.drive.forward().bumperGoDist(0.5 * inchesPerBox, robot.bumpSensorLeft, robot.bumpSensorRight);
 
             robot.sleep(.05);
 
@@ -122,8 +126,55 @@ public class AutoPoleSensingRight extends LinearOpMode {
             //robot.drive.rotateLeftEncoder(110);
 
             robot.drive.rotateGyro(110, -90);
+        }
 
+        robot.lift.setPosition(robot.lift.FIVE_STACK -ITERATIONS *  100);
+
+        robot.drive.forward().goDist(.5 * inchesPerBox);
+
+        robot.sleep(.05);
+
+        robot.grabber.close();
+
+        robot.sleep(.3);
+
+        robot.lift.setPosition(robot.lift.SMALL);
+
+        robot.sleep(.05);
+
+        robot.drive.speed = .55;
+
+        if(id == 3){
+
+            robot.drive.speed = .35;
+
+            robot.drive.backward().goDist(.5 * inchesPerBox);
+
+            robot.sleep(.05);
+
+            robot.drive.rotateRightEncoder(110);
+
+            //robot.poleHarmonization(telemetry);
+
+            robot.sleep(.05);
+
+            robot.deliver();
+
+            //robot.drive.rotateLeftEncoder(110);
+
+            robot.drive.rotateGyro(110, -90);
+
+            robot.drive.forward().goDist(.5 * inchesPerBox);
 
         }
+        else{
+            robot.drive.backward().goDist((3 - id) * inchesPerBox);
+            robot.sleep(.2);
+
+            robot.lift.setPosition(0);
+        }
+
+
+
     }
 }

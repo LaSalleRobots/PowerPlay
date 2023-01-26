@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -291,6 +292,24 @@ public class MecanumDrive {
         return this;
     }
 
+    public MecanumDrive bumperGoDist(double runningDistance, TouchSensor bumpLeft, TouchSensor bumpRight) {
+        // clip the powers to -1 and 1
+        int flD = 1; if (flP < 0) {flD=-1;}
+        int frD = 1; if (frP < 0) {frD=-1;}
+        int blD = 1; if (blP < 0) {blD=-1;}
+        int brD = 1; if (brP < 0) {brD=-1;}
+
+
+        this.bumperGoTarget((int) (flD * runningDistance * TICKS_PER_INCH),
+                (int) (frD * runningDistance * TICKS_PER_INCH),
+                (int) (blD * runningDistance * TICKS_PER_INCH),
+                (int) (brD * runningDistance * TICKS_PER_INCH),
+                bumpLeft,
+                bumpRight);
+
+        return this;
+    }
+
     public MecanumDrive interruptableGoTarget(int LF, int RF, int LB, int RB, Rev2mDistanceSensor sensor) {
 
         this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -303,6 +322,7 @@ public class MecanumDrive {
         this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        this.recordPosition();
 
         double p = .1;
         this.leftFront.setPower(p);
@@ -359,6 +379,77 @@ public class MecanumDrive {
         this.off();
         return this;
     }
+
+    public MecanumDrive bumperGoTarget(int LF, int RF, int LB, int RB, TouchSensor bumpLeft, TouchSensor bumpRight) {
+
+        this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        this.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        this.recordPosition();
+
+        double p = .1;
+        this.leftFront.setPower(p);
+        this.rightFront.setPower(p);
+        this.leftBack.setPower(p);
+        this.rightBack.setPower(p);
+
+        this.leftFront.setTargetPosition(LF);
+        this.rightFront.setTargetPosition(RF);
+        this.leftBack.setTargetPosition(LB);
+        this.rightBack.setTargetPosition(RB);
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        //while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
+        while (true) {
+
+            if (bumpLeft.isPressed() && bumpRight.isPressed()) {
+                break;
+            }
+            if (Math.abs(leftFront.getTargetPosition()  - leftFront.getCurrentPosition()) < 10)  { break; }
+            if (Math.abs(rightFront.getTargetPosition() - rightFront.getCurrentPosition()) < 10) { break; }
+            if (Math.abs(leftBack.getTargetPosition()   - leftBack.getCurrentPosition()) < 10)   { break; }
+            if (Math.abs(rightBack.getTargetPosition()  - rightBack.getCurrentPosition()) < 10)  { break; }
+        }
+        // update the goal of the motors to be where they currently are
+        int lb = leftBack.getCurrentPosition();
+        int rb = rightBack.getCurrentPosition();
+        int lf = leftFront.getCurrentPosition();
+        int rf = rightFront.getCurrentPosition();
+
+        leftBack.setTargetPosition(lb);
+        rightBack.setTargetPosition(rb);
+        leftFront.setTargetPosition(lf);
+        rightFront.setTargetPosition(rf);
+
+        waitForTargetPosition();
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        this.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+
+        this.off();
+        return this;
+    }
+
 
     // support the old API style
     public MecanumDrive runFor(double seconds) {return goFor(seconds);}
@@ -681,7 +772,6 @@ public class MecanumDrive {
         this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-
         this.off();
         return this;
 
@@ -759,7 +849,26 @@ public class MecanumDrive {
         rightBack.setTargetPosition(recordedRightBackPos);
         leftFront.setTargetPosition(recordedLeftFrontPos);
         rightFront.setTargetPosition(recordedRightFrontPos);
+
+        double p = 0.2;
+        this.leftFront.setPower(p);
+        this.rightFront.setPower(p);
+        this.leftBack.setPower(p);
+        this.rightBack.setPower(p);
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
         waitForTargetPosition();
+
+        this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.rightBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        this.leftBack.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        this.off();
     }
 
     public void waitForTargetPosition() {
@@ -780,6 +889,8 @@ public class MecanumDrive {
     }
 
     public void waitForTargetPositionSmooth() {
+
+
         while (true) {
             if (Math.abs(leftFront.getTargetPosition() - leftFront.getCurrentPosition()) < 10) {
                 break;
@@ -793,12 +904,42 @@ public class MecanumDrive {
             if (Math.abs(rightBack.getTargetPosition() - rightBack.getCurrentPosition()) < 10) {
                 break;
             }
-            this.leftFront.setPower( -.45 * ((double)this.leftFront.getCurrentPosition()/this.leftFront.getTargetPosition()) + .8);
-            this.leftBack.setPower( -.45 * ((double)this.leftBack.getCurrentPosition()/this.leftBack.getTargetPosition()) + .8);
-            this.rightFront.setPower( -.45 * ((double)this.rightFront.getCurrentPosition()/this.rightFront.getTargetPosition()) + .8);
-            this.rightBack.setPower( -.45 * ((double)this.rightBack.getCurrentPosition()/this.rightBack.getTargetPosition()) + .8);
+            this.leftFront.setPower(powerSmoothingPiecewise((double)this.leftFront.getCurrentPosition()/this.leftFront.getTargetPosition()));
+            this.leftBack.setPower(powerSmoothingPiecewise((double)this.leftBack.getCurrentPosition()/this.leftBack.getTargetPosition()));
+            this.rightFront.setPower(powerSmoothingPiecewise((double)this.rightFront.getCurrentPosition()/this.rightFront.getTargetPosition()));
+            this.rightBack.setPower(powerSmoothingPiecewise((double)this.rightBack.getCurrentPosition()/this.rightBack.getTargetPosition()));
         }
     }
+
+    public double powerSmoothingPiecewise(double x) {
+        double startPower = 0.5;
+        double finalPower = 0.35;
+        double midPoint = 0.35;
+        double midLength = 0.5;
+        double maxPower = this.speed;
+        double power1 = 2;
+        double power2 = 0;
+
+        if (this.speed > 1) {this.speed = 1;}
+        else if (this.speed < 0) {this.speed = 0;}
+
+        if (x >= 0 && x < (midPoint - midLength / 2)) {
+            double xVertex1 = midPoint - midLength / 2;
+            double a = (-startPower + finalPower) / Math.pow(Math.abs(-xVertex1), power1);
+            return a * Math.pow(Math.abs(x - xVertex1), power1) + maxPower;
+        }
+        else if (midPoint + midLength / 2 >= x && x >= midPoint - midLength / 2) {
+            return maxPower;
+        }
+        else if (x > midPoint - midLength / 2 && x <= 1) {
+            double xVertex = midPoint + midLength / 2;
+            double a = (-maxPower + finalPower) / Math.pow(Math.abs(1 - xVertex), power2);
+            return a * Math.pow(Math.abs(x - xVertex), power2) + maxPower;
+        }
+        return 0;
+
+    }
+
     public void waitForTargetPositionIgnoreRight() {
         while (true) {
             if (Math.abs(leftFront.getTargetPosition() - leftFront.getCurrentPosition()) < 10) {

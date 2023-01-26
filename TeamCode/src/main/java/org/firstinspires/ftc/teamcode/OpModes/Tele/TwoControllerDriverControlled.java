@@ -189,7 +189,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 robot.sleep(.25);
                 robot.lift.setPosition(robot.lift.getPosition() + 500);
                 robot.sleep(.1);
-                robot.drive.backward().goDist(0.3 * robot.inchesPerBox);
+                robot.drive.backward().goDist(0.3   * robot.inchesPerBox);
                 robot.sleep(.1);
             }
 

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
-@Autonomous(name="PID Testing 90 Degree")
+@Autonomous(name="PID Testing 90 Degree", group = "Testing")
 @Disabled
 
 public class Turn90PID extends LinearOpMode {

@@ -110,9 +110,17 @@ public class Robot {
     }
 
     public Robot poleHarmonization(Telemetry t) {
+
         double offset = this.vision.getPolePosition() - 70;
 
+        ElapsedTime time = new ElapsedTime();
+
         while (Math.abs(offset) >= 5) {
+
+            if (time.milliseconds() > 2000) {
+                break;
+            }
+
             this.drive.calculateDirectionsRobotCentric(0, 0, (offset / Math.abs(offset)) * 0.5);
             this.drive.applyPower();
 
@@ -132,6 +140,8 @@ public class Robot {
         this.drive.calculateDirections(0, 0, 0);
         this.drive.applyPower();
 
+
+
         return this;
     }
 
@@ -140,12 +150,13 @@ public class Robot {
         this.sleep(0.1);
 
         this.lift.setPosition(this.lift.getPosition() - 220);
-        this.sleep(.1);
 
         this.grabber.open();
-        this.sleep(0.2);
+        this.sleep(0.1);
 
-        this.drive.backward().goDist(inchesPerBox * .3);
+        this.drive.restorePosition();
+
+//        this.drive.backward().goDist(inchesPerBox * .3);
 
         return this;
     }

@@ -62,21 +62,27 @@ public class AutoPoleSensingRight extends LinearOpMode {
 
         robot.drive.rotateRightEncoder(45);
 
-        robot.poleHarmonization(telemetry);
-
-        robot.sleep(.05);
-
         robot.drive.speed = .45;
 
-        robot.drive.forward().goDist(.25 * inchesPerBox);
+        robot.drive.forward().goDist(.15 * inchesPerBox);
 
         robot.sleep(0.05);
+
+        robot.poleHarmonization(telemetry);
+
+        double p = 0.35;
+        robot.drive.leftFront.setPower(p);
+        robot.drive.rightFront.setPower(p);
+        robot.drive.leftBack.setPower(p);
+        robot.drive.rightBack.setPower(p);
+
+        robot.sleep(.05);
 
         robot.deliver();
 
         robot.sleep(.05);
 
-        robot.drive.backward().goDist(.25 * inchesPerBox);
+        robot.drive.backward().goDist(.3 * inchesPerBox);
 
         robot.sleep(.05);
         robot.drive.speed = .55;
@@ -128,7 +134,7 @@ public class AutoPoleSensingRight extends LinearOpMode {
             robot.drive.rotateGyro(110, -90);
         }
 
-        robot.lift.setPosition(robot.lift.FIVE_STACK -ITERATIONS *  100);
+        robot.lift.setPosition(robot.lift.FIVE_STACK -ITERATIONS *  150);
 
         robot.drive.forward().goDist(.5 * inchesPerBox);
 

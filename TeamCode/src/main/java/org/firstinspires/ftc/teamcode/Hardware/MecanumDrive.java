@@ -917,26 +917,24 @@ public class MecanumDrive {
         double midPoint = 0.35;
         double midLength = 0.5;
         double maxPower = this.speed;
-        double power1 = 2;
-        double power2 = 0;
 
         if (this.speed > 1) {this.speed = 1;}
         else if (this.speed < 0) {this.speed = 0;}
 
         if (x >= 0 && x < (midPoint - midLength / 2)) {
             double xVertex1 = midPoint - midLength / 2;
-            double a = (-startPower + finalPower) / Math.pow(Math.abs(-xVertex1), power1);
-            return a * Math.pow(Math.abs(x - xVertex1), power1) + maxPower;
+            double a = (-startPower + finalPower) / Math.pow(-xVertex1, 2);
+            return a * Math.pow(x - xVertex1, 2) + maxPower;
         }
         else if (midPoint + midLength / 2 >= x && x >= midPoint - midLength / 2) {
             return maxPower;
         }
-        else if (x > midPoint - midLength / 2 && x <= 1) {
+        /*else if (x > midPoint - midLength / 2 && x <= 1) {
             double xVertex = midPoint + midLength / 2;
-            double a = (-maxPower + finalPower) / Math.pow(Math.abs(1 - xVertex), power2);
-            return a * Math.pow(Math.abs(x - xVertex), power2) + maxPower;
-        }
-        return 0;
+            double a = (-maxPower + finalPower) / Math.pow(1 - xVertex, 2);
+            return a * Math.pow(x - xVertex, 2) + maxPower;
+        }*/
+        return finalPower;
 
     }
 

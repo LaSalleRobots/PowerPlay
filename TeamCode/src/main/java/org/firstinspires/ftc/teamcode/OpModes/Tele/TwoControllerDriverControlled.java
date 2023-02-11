@@ -20,7 +20,9 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         Debouncer dx = new Debouncer(),
                 bumper = new Debouncer(),
                 clawdebouncer = new Debouncer(),
+                limitdebouncer = new Debouncer(),
                 turnAroundDebouncer = new Debouncer();
+
 
         boolean fieldCentric = false;
         LiftControlMode liftControlMode = LiftControlMode.ManualControl;
@@ -86,6 +88,9 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
 
 
+
+
+
                 //Applies calculated movement for both field-centric and not
                 if (fieldCentric) {
                     //robot.getHeading() may be partially or not at all functional. Good luck, traveler.
@@ -142,6 +147,14 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 if (!opModeIsActive()) {break;}
                 telemetry.update();
 
+                if (limitdebouncer.isPressed(gamepad2.triangle)) {
+                    robot.lift.MIN -= 50;
+                    robot.lift.MIDDLE -= 50;
+                    robot.lift.LARGE -= 50;
+                    robot.lift.SMALL -= 50;
+                    robot.lift.setPositionAsync(robot.lift.getPosition() - 50);
+                }
+
                 if (liftControlMode == LiftControlMode.PresetControl) {
                     // operation while in Preset Control state
                     if (gamepad2.dpad_up) {
@@ -154,7 +167,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                         robot.lift.setPositionAsync(robot.lift.MIDDLE);
                     }
                     if (gamepad2.dpad_down) {
-                        robot.lift.setPositionAsync(0);
+                        robot.lift.setPositionAsync(robot.lift.MIN);
                     }
 
                     // slight bump up for cone stacks
@@ -189,7 +202,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 robot.sleep(.25);
                 robot.lift.setPosition(robot.lift.getPosition() + 500);
                 robot.sleep(.1);
-                robot.drive.backward().goDist(0.3   * robot.inchesPerBox);
+                robot.drive.backward().goDist(0.3   * robot.inchesPerBox, 0.4);
                 robot.sleep(.1);
             }
 

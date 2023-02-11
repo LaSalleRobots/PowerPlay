@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes.Testing;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
 @Autonomous(group = "Testing")
+@Disabled
 public class AutoSmallSpamTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -47,7 +49,7 @@ public class AutoSmallSpamTest extends LinearOpMode {
             robot.lift.setPosition(robot.lift.FIVE_STACK - (i * 100));
             robot.sleep(0.25);
 
-            robot.drive.forward().goDistSmooth(1.25 * inchesPerBox);
+            robot.drive.forward().goDistSmooth(1.25 * inchesPerBox, 0.5);
             robot.sleep(0.25);
 
             robot.grabber.close();
@@ -55,18 +57,18 @@ public class AutoSmallSpamTest extends LinearOpMode {
             robot.lift.setPosition(robot.lift.SMALL);
             robot.sleep(0.25);
 
-            robot.drive.backward().goDistSmooth(inchesPerBox * 1.25);
+            robot.drive.backward().goDistSmooth(inchesPerBox * 1.25, 0.5);
             robot.sleep(0.25);
 
             robot.drive.rotateGyro(-45, -135);
             robot.sleep(0.25);
 
-            robot.drive.forward().goDist(0.2 * inchesPerBox);
+            robot.drive.forward().goDist(0.2 * inchesPerBox, 0.5);
             robot.sleep(0.25);
 
             robot.deliver();
 
-            robot.drive.backward().goDist(0.2 * inchesPerBox);
+            robot.drive.backward().goDist(0.2 * inchesPerBox, 0.5);
             robot.sleep(0.25);
 
             robot.drive.rotateGyro(45, -90);

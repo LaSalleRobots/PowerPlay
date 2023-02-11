@@ -121,7 +121,7 @@ public class Robot {
                 break;
             }
 
-            this.drive.calculateDirectionsRobotCentric(0, 0, (offset / Math.abs(offset)) * 0.5);
+            this.drive.calculateDirectionsRobotCentric(0, 0, (offset / Math.abs(offset)) * 0.4);
             this.drive.applyPower();
 
             t.addData("offset", offset);
@@ -136,7 +136,6 @@ public class Robot {
         //this.drive.off();
 
         //
-        this.drive.calculateDirectionsRobotCentric(0, 0, 0);
         this.drive.calculateDirections(0, 0, 0);
         this.drive.applyPower();
 
@@ -146,17 +145,17 @@ public class Robot {
     }
 
     public Robot deliver() {
-        this.drive.forward().interruptableGoDist(inchesPerBox * .3, this.poleSensor);
+        this.drive.forward().interruptableGoDist(inchesPerBox * .5, this.poleSensor);
         this.sleep(0.1);
 
         this.lift.setPosition(this.lift.getPosition() - 220);
 
         this.grabber.open();
-        this.sleep(0.1);
+        this.sleep(0.9);
 
         this.drive.restorePosition();
 
-//        this.drive.backward().goDist(inchesPerBox * .3);
+        //this.drive.backward().goDist(inchesPerBox * .3);
 
         return this;
     }

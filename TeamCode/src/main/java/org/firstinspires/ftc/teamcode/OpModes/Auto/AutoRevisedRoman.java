@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.OpModes.Auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
 @Autonomous
+@Disabled
 public class AutoRevisedRoman extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
@@ -37,13 +39,13 @@ public class AutoRevisedRoman extends LinearOpMode {
         robot.sleep(0.25);
         robot.lift.setPosition(20);
 
-        robot.drive.forward().goDist(2.9 * inchesPerBox - 15);
+        robot.drive.forward().goDist(2.9 * inchesPerBox - 15, 0.5);
         robot.sleep(.25);
 
-        robot.drive.backward().goDist(inchesPerBox/4);
+        robot.drive.backward().goDist(inchesPerBox/4, 0.5);
         robot.sleep(.25);
 
-        robot.drive.right().goDist((inchesPerBox/2) * directionCoefficient);
+        robot.drive.right().goDist((inchesPerBox/2) * directionCoefficient, 0.5);
         robot.sleep(.25);
 
         robot.lift.setPosition(robot.lift.LARGE);
@@ -58,10 +60,10 @@ public class AutoRevisedRoman extends LinearOpMode {
         robot.grabber.open();
         robot.sleep(0.25);
 
-        robot.drive.backward().goDist(inchesPerBox * .25);
+        robot.drive.backward().goDist(inchesPerBox * .25, 0.5);
         robot.sleep(0.25);
 
-        robot.drive.left().goDist(inchesPerBox * .5 * directionCoefficient);
+        robot.drive.left().goDist(inchesPerBox * .5 * directionCoefficient, 0.5);
         robot.sleep(0.25);
 
         robot.lift.setPositionAsync(0);
@@ -88,13 +90,13 @@ public class AutoRevisedRoman extends LinearOpMode {
         robot.sleep(0.2);
         robot.lift.setPositionAsync(robot.lift.LARGE);
 
-        robot.drive.backward().goDist(inchesPerBox * 1);
+        robot.drive.backward().goDist(inchesPerBox * 1, 0.5);
         robot.sleep(0.25);
 
         robot.drive.rotateRightEncoder(90 * directionCoefficient);
         robot.sleep(0.25);
 
-        robot.drive.right().goDist((inchesPerBox * .95 - robot.robotDistFront) * directionCoefficient);
+        robot.drive.right().goDist((inchesPerBox * .95 - robot.robotDistFront) * directionCoefficient, 0.5);
         robot.sleep(0.25);
 
         robot.drive.forward().interruptableGoDist(inchesPerBox * .3, robot.poleSensor);
@@ -106,13 +108,13 @@ public class AutoRevisedRoman extends LinearOpMode {
         robot.grabber.open();
         robot.sleep(0.25);
 
-        robot.drive.backward().goDist(inchesPerBox * .25);
+        robot.drive.backward().goDist(inchesPerBox * .25, 0.5);
         robot.sleep(0.25);
 
         robot.lift.setPositionAsync(0);
         robot.sleep(0.1);
 
-        robot.drive.left().goDist(inchesPerBox * (2 + (directionCoefficient/2.0) -(Math.abs(id))));
+        robot.drive.left().goDist(inchesPerBox * (2 + (directionCoefficient/2.0) -(Math.abs(id))), 0.5);
 
 
 

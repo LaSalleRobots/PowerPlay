@@ -36,6 +36,6 @@ public class AutoEncoderTest extends LinearOpMode {
 
         waitForStart();
 
-        robot.drive.runToPosition(700, 0,700,0);
+        robot.drive.runToPosition(700, 0,700,0, 0.5);
     }
 }

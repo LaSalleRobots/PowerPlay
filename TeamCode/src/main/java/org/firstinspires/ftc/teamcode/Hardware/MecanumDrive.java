@@ -22,12 +22,12 @@ public class MecanumDrive {
 
     // drive motors have 384.5 points per rotation at the output shaft according to Gobuilda
 
-    public double speed = 1;
+
     private  double oldSpeed = 1;
 
     static final double TICKS_PER_INCH = 40.88721;
 
-    static final double POLE_SENSOR_TRIGGER_DISTANCE_CM = 15;
+    static final double POLE_SENSOR_TRIGGER_DISTANCE_CM = 18;
 
     final double ticksPerDegree = 700 / 90.0;
 
@@ -62,6 +62,8 @@ public class MecanumDrive {
     private ElapsedTime runtime;
 
     public IMU imu;
+
+    public double speed = 1;
 
 
     public MecanumDrive(HardwareMap hardwareMap, ElapsedTime runtime, IMU imu) {
@@ -192,6 +194,7 @@ public class MecanumDrive {
         blP = 0;
         frP = 0;
         brP = 0;
+        // VVV this could be the sus code... VVV
         leftFront.setPower(0);
         rightFront.setPower(0);
         leftBack.setPower(0);
@@ -236,7 +239,7 @@ public class MecanumDrive {
         return this;
     }
 
-    public MecanumDrive goDist(double runningDistance) {
+    public MecanumDrive goDist(double runningDistance, double speed) {
 
 
 
@@ -250,12 +253,13 @@ public class MecanumDrive {
         this.runToPosition((int) (flD * runningDistance * TICKS_PER_INCH),
                 (int) (frD * runningDistance * TICKS_PER_INCH),
                 (int) (blD * runningDistance * TICKS_PER_INCH),
-                (int) (brD * runningDistance * TICKS_PER_INCH));
+                (int) (brD * runningDistance * TICKS_PER_INCH),
+                speed);
 
         return this;
     }
 
-    public MecanumDrive goDistSmooth(double runningDistance) {
+    public MecanumDrive goDistSmooth(double runningDistance, double speed) {
 
 
 
@@ -269,7 +273,8 @@ public class MecanumDrive {
         this.runToPositionSmooth((int) (flD * runningDistance * TICKS_PER_INCH),
                 (int) (frD * runningDistance * TICKS_PER_INCH),
                 (int) (blD * runningDistance * TICKS_PER_INCH),
-                (int) (brD * runningDistance * TICKS_PER_INCH));
+                (int) (brD * runningDistance * TICKS_PER_INCH),
+                speed);
 
         return this;
     }
@@ -451,9 +456,6 @@ public class MecanumDrive {
     }
 
 
-    // support the old API style
-    public MecanumDrive runFor(double seconds) {return goFor(seconds);}
-    public MecanumDrive runDist(double d) {return goDist(d);}
 
     public MecanumDrive forward() {
         calculateDirections(0, -1, 0);
@@ -545,14 +547,14 @@ public class MecanumDrive {
 	}
 
     public void rotateRightEncoder(int degree) {
-        this.runToPosition((int) (degree * 754/90.0), -(int) (degree * 605/90.0), (int) (degree * 605/90.0), -(int) (degree * 724/90.0));
+        this.runToPosition((int) (degree * 754/90.0), -(int) (degree * 605/90.0), (int) (degree * 605/90.0), -(int) (degree * 724/90.0), 0.3);
         //this.runToPosition((int) (degree * ticksPerDegree), -(int) (degree * ticksPerDegree), (int) (degree * ticksPerDegree), -(int) (degree * ticksPerDegree));
 
     }
 
     public void rotateLeftEncoder(int degree) {
         //this.runToPosition(-(int) (degree * ticksPerDegree), (int) (degree * ticksPerDegree), -(int) (degree * ticksPerDegree), (int) (degree * ticksPerDegree));
-        this.runToPosition(-(int) (degree * 698/90.0), (int) (degree * 629/90.0), -(int) (degree * 611/90.0), (int) (degree * 732/90.0));
+        this.runToPosition(-(int) (degree * 698/90.0), (int) (degree * 629/90.0), -(int) (degree * 611/90.0), (int) (degree * 732/90.0), 0.3);
     }
 
     public void rotateGyro(int degree, int heading){
@@ -594,7 +596,7 @@ public class MecanumDrive {
         this.off();
     }
 
-    public MecanumDrive runToPosition(int LF, int RF, int LB, int RB) {
+    public MecanumDrive runToPosition(int LF, int RF, int LB, int RB, double speed) {
         this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -605,7 +607,7 @@ public class MecanumDrive {
         this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        double p = this.speed;
+        double p = speed;
         this.leftFront.setPower(p);
         this.rightFront.setPower(p);
         this.leftBack.setPower(p);
@@ -640,7 +642,16 @@ public class MecanumDrive {
 
     }
 
-    public MecanumDrive runToPositionSmooth(int LF, int RF, int LB, int RB) {
+    public MecanumDrive brake() {
+        this.leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        return this;
+    }
+
+    public MecanumDrive runToPositionSmooth(int LF, int RF, int LB, int RB, double speed) {
         this.leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -651,7 +662,7 @@ public class MecanumDrive {
         this.leftFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         this.rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        double p = this.speed;
+        double p = speed;
         this.leftFront.setPower(p);
         this.rightFront.setPower(p);
         this.leftBack.setPower(p);
@@ -668,7 +679,7 @@ public class MecanumDrive {
         this.leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         //while (leftFront.isBusy() || rightFront.isBusy() || leftBack.isBusy() || rightBack.isBusy()) {}
-        waitForTargetPositionSmooth();
+        waitForTargetPositionSmooth(speed);
 
         this.leftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         this.rightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -850,7 +861,7 @@ public class MecanumDrive {
         leftFront.setTargetPosition(recordedLeftFrontPos);
         rightFront.setTargetPosition(recordedRightFrontPos);
 
-        double p = 0.2;
+        double p = 0.4;
         this.leftFront.setPower(p);
         this.rightFront.setPower(p);
         this.leftBack.setPower(p);
@@ -873,22 +884,22 @@ public class MecanumDrive {
 
     public void waitForTargetPosition() {
         while (true) {
-            if (Math.abs(leftFront.getTargetPosition() - leftFront.getCurrentPosition()) < 10) {
+            if (Math.abs(leftFront.getTargetPosition() - leftFront.getCurrentPosition()) < 20) {
                 break;
             }
-            if (Math.abs(rightFront.getTargetPosition() - rightFront.getCurrentPosition()) < 10) {
+            if (Math.abs(rightFront.getTargetPosition() - rightFront.getCurrentPosition()) < 20) {
                 break;
             }
-            if (Math.abs(leftBack.getTargetPosition() - leftBack.getCurrentPosition()) < 10) {
+            if (Math.abs(leftBack.getTargetPosition() - leftBack.getCurrentPosition()) < 20) {
                 break;
             }
-            if (Math.abs(rightBack.getTargetPosition() - rightBack.getCurrentPosition()) < 10) {
+            if (Math.abs(rightBack.getTargetPosition() - rightBack.getCurrentPosition()) < 20) {
                 break;
             }
         }
     }
 
-    public void waitForTargetPositionSmooth() {
+    public void waitForTargetPositionSmooth(double speed) {
 
 
         while (true) {
@@ -904,22 +915,22 @@ public class MecanumDrive {
             if (Math.abs(rightBack.getTargetPosition() - rightBack.getCurrentPosition()) < 10) {
                 break;
             }
-            this.leftFront.setPower(powerSmoothingPiecewise((double)this.leftFront.getCurrentPosition()/this.leftFront.getTargetPosition()));
-            this.leftBack.setPower(powerSmoothingPiecewise((double)this.leftBack.getCurrentPosition()/this.leftBack.getTargetPosition()));
-            this.rightFront.setPower(powerSmoothingPiecewise((double)this.rightFront.getCurrentPosition()/this.rightFront.getTargetPosition()));
-            this.rightBack.setPower(powerSmoothingPiecewise((double)this.rightBack.getCurrentPosition()/this.rightBack.getTargetPosition()));
+            this.leftFront.setPower(powerSmoothingPiecewise((double)this.leftFront.getCurrentPosition()/this.leftFront.getTargetPosition(), speed));
+            this.leftBack.setPower(powerSmoothingPiecewise((double)this.leftBack.getCurrentPosition()/this.leftBack.getTargetPosition(), speed));
+            this.rightFront.setPower(powerSmoothingPiecewise((double)this.rightFront.getCurrentPosition()/this.rightFront.getTargetPosition(), speed));
+            this.rightBack.setPower(powerSmoothingPiecewise((double)this.rightBack.getCurrentPosition()/this.rightBack.getTargetPosition(), speed));
         }
     }
 
-    public double powerSmoothingPiecewise(double x) {
+    public double powerSmoothingPiecewise(double x, double speed) {
         double startPower = 0.5;
         double finalPower = 0.35;
         double midPoint = 0.35;
         double midLength = 0.5;
-        double maxPower = this.speed;
+        double maxPower = speed;
 
-        if (this.speed > 1) {this.speed = 1;}
-        else if (this.speed < 0) {this.speed = 0;}
+        if (speed > 1) {speed = 1;}
+        else if (speed < 0) {speed = 0;}
 
         if (x >= 0 && x < (midPoint - midLength / 2)) {
             double xVertex1 = midPoint - midLength / 2;

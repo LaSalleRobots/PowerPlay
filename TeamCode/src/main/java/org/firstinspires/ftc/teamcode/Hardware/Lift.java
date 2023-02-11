@@ -7,14 +7,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Lift {
     private DcMotor liftMotor;
-
-    final public int LARGE = 2985;
-    final public int MIDDLE = 2120;
-    final public int SMALL = 1250;
+    public int MIN = 0;
+    public int LARGE = 2985;
+    public int MIDDLE = 2120;
+    public int SMALL = 1250;
 
     final public  int GROUND_JUNCTION = 720;
 
-    final public int FIVE_STACK = 500;
+    final public int FIVE_STACK = 470;
     final public int FOUR_STACK = 400;
     final public int THREE_STACK = 300;
     final public int TWO_STACK = 200;
@@ -72,7 +72,7 @@ public class Lift {
     public int bound(int ticks) {
         if (ticks > LARGE) {
             return LARGE;
-        } else if (ticks < 0) {
+        } else if (ticks < MIN) {
             return 0;
         }
         return ticks;

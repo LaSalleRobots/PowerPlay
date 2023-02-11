@@ -48,7 +48,7 @@ public class PoleSensingAutoRight extends LinearOpMode {
 
         robot.lift.setPosition(10);
 
-        robot.drive.forward().goDistSmooth(2.1 * inchesPerBox);
+        robot.drive.forward().goDistSmooth(2.1 * inchesPerBox, 0.65);
 
 
 //        robot.drive.rotateGyro(45, 45);
@@ -64,7 +64,7 @@ public class PoleSensingAutoRight extends LinearOpMode {
         robot.lift.setPosition(robot.lift.LARGE);
 
 
-        robot.drive.forward().goDist(.2 * inchesPerBox);
+        robot.drive.forward().goDist(.2 * inchesPerBox, 0.35);
         robot.deliver();
 
         robot.sleep(1);
@@ -77,7 +77,7 @@ public class PoleSensingAutoRight extends LinearOpMode {
         robot.lift.setPosition(robot.lift.FIVE_STACK);
         robot.sleep(.2);
 
-        robot.drive.forward().goDistSmooth(1.3 * inchesPerBox);
+        robot.drive.forward().goDistSmooth(1.3 * inchesPerBox, 0.5);
         robot.sleep(0.25);
 
         robot.grabber.close();
@@ -88,14 +88,14 @@ public class PoleSensingAutoRight extends LinearOpMode {
         //robot.sleep(0.2);
         //robot.lift.setPositionAsync(robot.lift.LARGE);
 
-        robot.drive.backward().goDist(inchesPerBox * 1);
+        robot.drive.backward().goDist(inchesPerBox * 1, 0.5);
         robot.sleep(0.1);
 
 //        robot.drive.rotateRightEncoder(90 * directionCoefficient);
         robot.drive.rotateGyro(90, 0);
         robot.sleep(0.25);
 
-        robot.drive.right().goDist((inchesPerBox * 1 - robot.robotDistFront) * directionCoefficient);
+        robot.drive.right().goDist((inchesPerBox * 1 - robot.robotDistFront) * directionCoefficient, 0.5);
         robot.sleep(0.25);
 
         robot.drive.forward().interruptableGoDist(inchesPerBox * .3, robot.poleSensor);
@@ -107,13 +107,13 @@ public class PoleSensingAutoRight extends LinearOpMode {
         robot.grabber.open();
         robot.sleep(0.25);
 
-        robot.drive.backward().goDist(inchesPerBox * .25);
+        robot.drive.backward().goDist(inchesPerBox * .25, 0.5);
         robot.sleep(0.25);
 
         robot.lift.setPositionAsync(0);
         robot.sleep(0.1);
 
-        robot.drive.left().goDist(inchesPerBox * (2 + (directionCoefficient/2.0) -(Math.abs(id))));
+        robot.drive.left().goDist(inchesPerBox * (2 + (directionCoefficient/2.0) -(Math.abs(id))), 0.5);
 
 
         //robot.drive.interruptableGoDist(0.5 * inchesPerBox, robot.poleSensor);

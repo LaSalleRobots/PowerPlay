@@ -46,13 +46,13 @@ public class AutonomousWithSensorRight extends LinearOpMode {
         robot.sleep(0.25);
         robot.lift.setPosition(robot.lift.SMALL);
 
-        robot.drive.forward().goDist((inchesPerBox * .6) - robotLength);
+        robot.drive.forward().goDist((inchesPerBox * .6) - robotLength, 0.5);
         robot.sleep(0.25);
 
-        robot.drive.right().goDist(inchesPerBox * .5 * directionCoefficient);
+        robot.drive.right().goDist(inchesPerBox * .5 * directionCoefficient, 0.5);
         robot.sleep(0.25);
 
-        robot.drive.forward().goDist(inchesPerBox * .2);
+        robot.drive.forward().goDist(inchesPerBox * .2, 0.5);
         robot.sleep(0.25);
 
         robot.drive.forward().interruptableGoDist(inchesPerBox * .3, robot.poleSensor);
@@ -61,12 +61,12 @@ public class AutonomousWithSensorRight extends LinearOpMode {
         robot.grabber.open();
         robot.sleep(0.25);
 
-        robot.drive.backward().goDist(inchesPerBox * .25);
+        robot.drive.backward().goDist(inchesPerBox * .25, 0.5);
         robot.sleep(0.25);
 
         // First cone now delivered (we are now in te center of the box)
 
-        robot.drive.right().goDist(inchesPerBox * 0.5 * directionCoefficient);
+        robot.drive.right().goDist(inchesPerBox * 0.5 * directionCoefficient, 0.5);
         robot.sleep(0.25);
 
         //robot.drive.backward().goFor(1);
@@ -81,7 +81,7 @@ public class AutonomousWithSensorRight extends LinearOpMode {
         robot.drive.rotateLeftEncoder(90 * directionCoefficient);
         robot.sleep(0.25);
 
-        robot.drive.forward().goDist(inchesPerBox * 2.2);
+        robot.drive.forward().goDist(inchesPerBox * 2.2, 0.5);
 
         robot.drive.variableSpeedMode(0.5);
         telemetry.addData("mode", "started");
@@ -105,13 +105,13 @@ public class AutonomousWithSensorRight extends LinearOpMode {
         robot.sleep(0.2);
         robot.lift.setPositionAsync(robot.lift.LARGE);
 
-        robot.drive.backward().goDist(inchesPerBox * 1);
+        robot.drive.backward().goDist(inchesPerBox * 1, 0.5);
         robot.sleep(0.25);
 
         robot.drive.rotateRightEncoder(90 * directionCoefficient);
         robot.sleep(0.25);
 
-        robot.drive.right().goDist((inchesPerBox * .95 - robot.robotDistFront) * directionCoefficient);
+        robot.drive.right().goDist((inchesPerBox * .95 - robot.robotDistFront) * directionCoefficient, 0.5);
         robot.sleep(0.25);
 
         robot.drive.forward().interruptableGoDist(inchesPerBox * .3, robot.poleSensor);
@@ -123,13 +123,13 @@ public class AutonomousWithSensorRight extends LinearOpMode {
         robot.grabber.open();
         robot.sleep(0.25);
 
-        robot.drive.backward().goDist(inchesPerBox * .25);
+        robot.drive.backward().goDist(inchesPerBox * .25, 0.5);
         robot.sleep(0.25);
 
         robot.lift.setPositionAsync(0);
         robot.sleep(0.1);
 
-        robot.drive.left().goDist(inchesPerBox * (2 + (directionCoefficient/2.0) -(Math.abs(id))));
+        robot.drive.left().goDist(inchesPerBox * (2 + (directionCoefficient/2.0) -(Math.abs(id))), 0.5);
 
         // this is for right only
 

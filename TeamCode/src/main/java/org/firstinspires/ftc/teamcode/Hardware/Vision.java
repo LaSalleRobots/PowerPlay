@@ -29,7 +29,9 @@ public class Vision {
     }
 
     public void switchToPolesMode() {
+        runner.close();
         runner.setPipeline(poleCenterDetection);
+        runner.start();
     }
 
     public double getPolePosition() {

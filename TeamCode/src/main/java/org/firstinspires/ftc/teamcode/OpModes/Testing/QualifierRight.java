@@ -54,7 +54,7 @@ public class QualifierRight extends LinearOpMode {
         robot.drive.left().goDist(24, 0.5);
         robot.sleep(0.25);
 
-        robot.drive.forward().goDist(26.5, 0.5);
+        robot.drive.forward().goDist(28, 0.5);
         robot.sleep(0.25);
 
         robot.drive.rotateGyro(-90, -90);

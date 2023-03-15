@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Hardware.Robot;
 import org.firstinspires.ftc.teamcode.Hardware.Vision;
 
 @Autonomous
+@Disabled
 public class AutoEffeciantPathRight extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {

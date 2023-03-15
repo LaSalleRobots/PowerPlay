@@ -34,6 +34,10 @@ public class Vision {
         runner.start();
     }
 
+    public void stopCamera() {
+        runner.close();
+    }
+
     public double getPolePosition() {
         return poleCenterDetection.POLE_Y;
     }

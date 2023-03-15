@@ -16,6 +16,8 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         Robot robot = new Robot(hardwareMap, time);
         double x, y, r, target, targetAngle;
 
+
+
         // Debouncers
         Debouncer dx = new Debouncer(),
                 bumper = new Debouncer(),
@@ -41,6 +43,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
         double ManualModeLiftSensitivity = -80;
 
         waitForStart();
+        robot.vision.stopCamera();
         time.reset();
         robot.lift.setPositionAsync(0);
 
@@ -50,17 +53,17 @@ public class TwoControllerDriverControlled extends LinearOpMode {
                 robot.grabber.open(); } */
 
             if (!opModeIsActive()) {break;}
-            telemetry.update();
+//            telemetry.update();
 
-            telemetry.addData("Pole: ", robot.poleSensor.getDistance(DistanceUnit.CM));
-            telemetry.addData("IMU heading: ", robot.getAngles());
-            telemetry.addData("Target", robot.lift.getTarget());
-            telemetry.addData("Position", robot.lift.getPosition());
-
-            telemetry.addData("Front Right", robot.drive.rightFront.getCurrentPosition());
-            telemetry.addData("Front Left", robot.drive.leftFront.getCurrentPosition());
-            telemetry.addData("Back Right", robot.drive.rightBack.getCurrentPosition());
-            telemetry.addData("Back Left", robot.drive.leftBack.getCurrentPosition());
+//            telemetry.addData("Pole: ", robot.poleSensor.getDistance(DistanceUnit.CM));
+//            telemetry.addData("IMU heading: ", robot.getAngles());
+//            telemetry.addData("Target", robot.lift.getTarget());
+//            telemetry.addData("Position", robot.lift.getPosition());
+//
+//            telemetry.addData("Front Right", robot.drive.rightFront.getCurrentPosition());
+//            telemetry.addData("Front Left", robot.drive.leftFront.getCurrentPosition());
+//            telemetry.addData("Back Right", robot.drive.rightBack.getCurrentPosition());
+//            telemetry.addData("Back Left", robot.drive.leftBack.getCurrentPosition());
 
 
             //Movement section
@@ -124,7 +127,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             }
 
             if (!opModeIsActive()) {break;}
-            telemetry.update();
+//            telemetry.update();
 
             //Lift section
             {
@@ -186,7 +189,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             }
 
             if (!opModeIsActive()) {break;}
-            telemetry.update();
+//            telemetry.update();
 
             //Claw
             if (clawdebouncer.isPressed(gamepad2.cross)) {
@@ -194,7 +197,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
             }
 
             if (!opModeIsActive()) {break;}
-            telemetry.update();
+//            telemetry.update();
 
 
             if (robot.bumperPressed()) {
@@ -210,7 +213,7 @@ public class TwoControllerDriverControlled extends LinearOpMode {
 
 
             if (!opModeIsActive()) {break;}
-            telemetry.update();
+//            telemetry.update();
         }
     }
 
